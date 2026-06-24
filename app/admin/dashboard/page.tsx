@@ -249,7 +249,7 @@ export default function AdminDashboard() {
 
           {/* Logout */}
           <div className="flex items-center gap-3.5 px-4 py-3 rounded-xl transition-all">
-            <UserButton afterSignOutUrl="/admin" appearance={{ elements: { userButtonAvatarBox: "w-7 h-7" } }} />
+            <UserButton signOutUrl="/admin" appearance={{ elements: { userButtonAvatarBox: "w-7 h-7" } }} />
             <span className="hidden lg:block text-xs font-semibold text-white/50">My Account</span>
           </div>
         </div>
