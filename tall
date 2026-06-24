@@ -1,0 +1,26 @@
+warning: in the working copy of 'pnpm-workspace.yaml', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/pnpm-workspace.yaml b/pnpm-workspace.yaml[m
+[1mindex c14f304..029ca3d 100644[m
+[1m--- a/pnpm-workspace.yaml[m
+[1m+++ b/pnpm-workspace.yaml[m
+[36m@@ -1,12 +1,12 @@[m
+ allowBuilds:[m
+[31m-  '@firebase/util': set this to true or false[m
+[31m-  '@prisma/client': set this to true or false[m
+[31m-  '@prisma/engines': set this to true or false[m
+[31m-  ffmpeg-static: set this to true or false[m
+[31m-  prisma: set this to true or false[m
+[31m-  protobufjs: set this to true or false[m
+[31m-  sharp: set this to true or false[m
+[31m-  yt-dlp-exec: set this to true or false[m
+[32m+[m[32m  '@firebase/util': true[m
+[32m+[m[32m  '@prisma/client': true[m
+[32m+[m[32m  '@prisma/engines': true[m
+[32m+[m[32m  ffmpeg-static: true[m
+[32m+[m[32m  prisma: true[m
+[32m+[m[32m  protobufjs: true[m
+[32m+[m[32m  sharp: true[m
+[32m+[m[32m  yt-dlp-exec: true[m
+ minimumReleaseAgeExclude:[m
+   - '@clerk/backend@3.8.3'[m
+   - '@clerk/nextjs@7.5.8'[m

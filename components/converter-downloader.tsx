@@ -2,7 +2,17 @@
 
 import { useState, useEffect } from "react"
 import Image from "next/image"
-import { Search, Loader2, CheckCircle2, Youtube, Download } from "lucide-react"
+import { Search, Loader2, CheckCircle2, Download } from "lucide-react"
+
+const Youtube = ({ className }: { className?: string }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+  >
+    <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.108C19.528 3.545 12 3.545 12 3.545s-7.528 0-9.388.51C1.037 4.545.5 5.5.5 6.163.02 8.016.02 12 .02 12s0 3.984.48 5.837c.28 1.05.81 1.603 1.612 1.81 1.86.513 9.388.513 9.388.513s7.528 0 9.388-.513c.8-.207 1.332-.76 1.612-1.81.48-1.853.48-5.837.48-5.837s0-3.984-.48-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+  </svg>
+)
 
 interface Song {
   id: string
