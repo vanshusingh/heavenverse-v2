@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model SystemLog {
+  id        String   @id @default(cuid())
+  timestamp DateTime @default(now())
+  level     String   // "info", "warn", "error", "success"
+  source    String
+  message   String
+}
+
+model AdminUser {
+  id             String   @id @default(cuid())
+  name           String
+  email          String   @unique
+  role           String   // "admin", "user", "moderator"
+  status         String   // "active", "inactive", "banned"
+  lastActive     String
+  joined         String
+  tracksUploaded Int      @default(0)
+  avatar         String
+}
