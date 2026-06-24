@@ -1,14 +1,9 @@
 allowBuilds:
-  '@firebase/util': set this to true or false
-  '@prisma/client': set this to true or false
-  '@prisma/engines': set this to true or false
-  ffmpeg-static: set this to true or false
-  prisma: set this to true or false
-  protobufjs: set this to true or false
-  sharp: set this to true or false
-  yt-dlp-exec: set this to true or false
-minimumReleaseAgeExclude:
-  - '@clerk/backend@3.8.3'
-  - '@clerk/nextjs@7.5.8'
-  - '@clerk/react@6.11.0'
-  - '@clerk/shared@4.21.0'
+  '@firebase/util': true
+  '@prisma/client': true
+  '@prisma/engines': true
+  ffmpeg-static: true
+  prisma: true
+  protobufjs: true
+  sharp: true
+  yt-dlp-exec: true
