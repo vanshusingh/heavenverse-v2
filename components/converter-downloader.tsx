@@ -169,7 +169,7 @@ export function ConverterDownloader({ onAddSong, onPreviewSong }: ConverterDownl
 
     // Simulate progress increments during backend conversion
     const progressInterval = setInterval(() => {
-      setProgress((prev) => {
+      setProgress((prev: number) => {
         if (prev >= 95) {
           clearInterval(progressInterval);
           return 95;
@@ -291,7 +291,7 @@ export function ConverterDownloader({ onAddSong, onPreviewSong }: ConverterDownl
                 <input
                   type="text"
                   value={urlInput}
-                  onChange={(e) => handleInputChange(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(e.target.value)}
                   onPaste={handlePaste}
                   disabled={step === 2 || (step >= 3 && step < 6)}
                   placeholder="Paste YouTube track link here..."
@@ -304,7 +304,7 @@ export function ConverterDownloader({ onAddSong, onPreviewSong }: ConverterDownl
                 <span className="text-[10px] text-white/40 font-medium px-1">Audio Quality</span>
                 <select
                   value={quality}
-                  onChange={(e) => setQuality(e.target.value as any)}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setQuality(e.target.value as any)}
                   disabled={step === 2 || (step >= 3 && step < 6)}
                   className="bg-black/30 border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-white/20 transition-all font-sans cursor-pointer"
                 >
