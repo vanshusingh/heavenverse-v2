@@ -24,6 +24,7 @@ export async function POST(req: Request) {
       noWarnings: true,
       noPlaylist: true,
       youtubeSkipDashManifest: true,
+      jsRuntimes: `node:${process.execPath}`,
     }) as any;
 
     return NextResponse.json({

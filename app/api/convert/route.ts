@@ -39,6 +39,7 @@ export async function POST(req: Request) {
       noWarnings: true,
       noPlaylist: true,
       youtubeSkipDashManifest: true,
+      jsRuntimes: `node:${process.execPath}`,
     }) as any;
 
     const resolvedTitle = info.title || "audio";
@@ -72,6 +73,7 @@ export async function POST(req: Request) {
       noPlaylist: true,
       ffmpegLocation: resolvedFfmpegPath || undefined,
       output: path.join(outputDir, `${safeTitle}.%(ext)s`),
+      jsRuntimes: `node:${process.execPath}`,
     });
 
     return NextResponse.json({
