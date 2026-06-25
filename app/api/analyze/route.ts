@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import path from "path";
 import { create } from "yt-dlp-exec";
+import { getYtDlpPath } from "@/lib/ytdlp";
 
 export async function POST(req: Request) {
   try {
@@ -10,8 +11,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "URL is required" }, { status: 400 });
     }
 
-    // Initialize yt-dlp-exec pointing to our local standalone executable
-    const ytdlp = create(path.join(process.cwd(), "yt-dlp.exe"));
+    // Initialize local/remote yt-dlp wrapper dynamically
+    const ytdlpPath = await getYtDlpPath();
+    const ytdlp = create(ytdlpPath);
 
     console.log("Starting yt-dlp...");
     console.log("URL:", url);

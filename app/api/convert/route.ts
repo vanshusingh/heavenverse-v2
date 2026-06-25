@@ -4,6 +4,7 @@ import fs from "fs";
 import { create } from "yt-dlp-exec";
 import ffmpegPath from "ffmpeg-static";
 import { cleanOldDownloads } from "@/lib/cleanup";
+import { getYtDlpPath } from "@/lib/ytdlp";
 
 export async function POST(req: Request) {
   try {
@@ -25,8 +26,9 @@ export async function POST(req: Request) {
       fs.mkdirSync(outputDir, { recursive: true });
     }
 
-    // Initialize local yt-dlp.exe wrapper
-    const ytdlp = create(path.join(process.cwd(), "yt-dlp.exe"));
+    // Initialize local/remote yt-dlp wrapper dynamically
+    const ytdlpPath = await getYtDlpPath();
+    const ytdlp = create(ytdlpPath);
 
     console.log("Starting yt-dlp...");
     console.log("URL:", url);
