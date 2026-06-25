@@ -65,11 +65,24 @@ export function getYtDlpOptions(baseOptions: any = {}): any {
   if (cookiesEnv && cookiesEnv.trim()) {
     const cookiesPath = process.platform === "win32" ? path.join(process.cwd(), "cookies.txt") : "/tmp/cookies.txt";
     try {
-      fs.writeFileSync(cookiesPath, cookiesEnv.trim(), "utf8");
+      let cookiesContent = cookiesEnv.trim();
+      
+      // Auto-detect and decode Base64 formatted cookies to bypass Vercel multiline limitations
+      const isMaybeBase64 = !cookiesContent.includes("\t") && !cookiesContent.includes("\n") && /^[a-zA-Z0-9+/=]+$/.test(cookiesContent);
+      if (isMaybeBase64) {
+        try {
+          cookiesContent = Buffer.from(cookiesContent, "base64").toString("utf8");
+          console.log("YouTube cookies decoded from Base64 successfully.");
+        } catch (e) {
+          console.warn("Failed to decode YT_COOKIES from Base64, using raw value.");
+        }
+      }
+
+      fs.writeFileSync(cookiesPath, cookiesContent, "utf8");
       options.cookies = cookiesPath;
-      console.log("YouTube cookies written successfully to:", cookiesPath);
+      console.log("YouTube cookies configured successfully at:", cookiesPath);
     } catch (err) {
-      console.error("Failed to write YT_COOKIES to file:", err);
+      console.error("Failed to configure YT_COOKIES:", err);
     }
   } else {
     console.log("No YT_COOKIES environment variable found. Continuing unauthenticated.");

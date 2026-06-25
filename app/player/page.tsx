@@ -37,7 +37,9 @@ import {
   User,
   ArrowUp,
   ArrowDown,
-  Shield
+  Shield,
+  Maximize2,
+  Minimize2
 } from "lucide-react"
 
 import {
@@ -93,6 +95,7 @@ export default function PlayerPage() {
   const [likedTrackIds, setLikedTrackIds] = useState<string[]>([])
   const [autoplay, setAutoplay] = useState(true)
   const [visualizerOn, setVisualizerOn] = useState(true)
+  const [isFullscreenMode, setIsFullscreenMode] = useState(false)
 
   // Upload/Drag-drop UI State
   const [isDragging, setIsDragging] = useState(false)
@@ -109,6 +112,7 @@ export default function PlayerPage() {
   // References
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const fullscreenCanvasRef = useRef<HTMLCanvasElement | null>(null)
   const animationRef = useRef<number | null>(null)
   const objectUrlsRef = useRef<Record<string, string>>({})
 
@@ -387,58 +391,71 @@ export default function PlayerPage() {
 
   // Canvas visualizer loop
   useEffect(() => {
-    if (!visualizerOn || !canvasRef.current) {
+    if (!visualizerOn) {
       if (animationRef.current) cancelAnimationFrame(animationRef.current)
       return
     }
 
-    const canvas = canvasRef.current
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
-
-    const bufferLength = analyserRef.current ? analyserRef.current.frequencyBinCount : 32
-    const dataArray = new Uint8Array(bufferLength)
-
     const renderLoop = () => {
       animationRef.current = requestAnimationFrame(renderLoop)
 
-      const width = canvas.width
-      const height = canvas.height
-      ctx.clearRect(0, 0, width, height)
+      const canvas = canvasRef.current
+      const fsCanvas = fullscreenCanvasRef.current
 
-      if (analyserRef.current && isPlaying) {
-        analyserRef.current.getByteFrequencyData(dataArray)
-      } else {
-        // Simulated wave or flat bars when paused
+      const drawCanvas = (c: HTMLCanvasElement, isFS: boolean) => {
+        const ctx = c.getContext("2d")
+        if (!ctx) return
+
+        const width = c.width
+        const height = c.height
+        ctx.clearRect(0, 0, width, height)
+
+        const bufferLength = analyserRef.current ? analyserRef.current.frequencyBinCount : 32
+        const dataArray = new Uint8Array(bufferLength)
+
+        if (analyserRef.current && isPlaying) {
+          analyserRef.current.getByteFrequencyData(dataArray)
+        } else {
+          // Simulated wave or flat bars when paused
+          for (let i = 0; i < bufferLength; i++) {
+            dataArray[i] = isPlaying
+              ? Math.sin(Date.now() * 0.008 + i) * 35 + 50
+              : Math.max(3, 8 - i * 0.2) // slowly drop to zero
+          }
+        }
+
+        const barWidth = (width / bufferLength) * 1.6
+        let barHeight
+        let x = 0
+
+        // Premium glowing linear gradient
+        const gradient = ctx.createLinearGradient(0, height, 0, 0)
+        if (isFS) {
+          gradient.addColorStop(0, "rgba(220, 38, 38, 0.05)") // deep red glow
+          gradient.addColorStop(0.5, "rgba(236, 72, 153, 0.65)") // glowing magenta
+          gradient.addColorStop(1, "rgba(99, 102, 241, 0.95)") // neon indigo
+        } else {
+          gradient.addColorStop(0, "rgba(220, 38, 38, 0.15)") // deep red glow
+          gradient.addColorStop(0.4, "rgba(236, 72, 153, 0.8)") // glowing magenta
+          gradient.addColorStop(1, "rgba(99, 102, 241, 1)") // neon indigo
+        }
+
         for (let i = 0; i < bufferLength; i++) {
-          dataArray[i] = isPlaying
-            ? Math.sin(Date.now() * 0.008 + i) * 35 + 50
-            : Math.max(3, 8 - i * 0.2) // slowly drop to zero
+          barHeight = (dataArray[i] / 255) * height * (isFS ? 0.95 : 0.85)
+          if (barHeight < 3) barHeight = 3
+
+          ctx.fillStyle = gradient
+          ctx.beginPath()
+          // Draw bars with rounded tops
+          ctx.roundRect(x, height - barHeight, barWidth - (isFS ? 3.5 : 2.5), barHeight, isFS ? 4 : 2.5)
+          ctx.fill()
+
+          x += barWidth
         }
       }
 
-      const barWidth = (width / bufferLength) * 1.6
-      let barHeight
-      let x = 0
-
-      // Premium glowing linear gradient
-      const gradient = ctx.createLinearGradient(0, height, 0, 0)
-      gradient.addColorStop(0, "rgba(220, 38, 38, 0.15)") // deep red glow
-      gradient.addColorStop(0.4, "rgba(236, 72, 153, 0.8)") // glowing magenta
-      gradient.addColorStop(1, "rgba(99, 102, 241, 1)") // neon indigo
-
-      for (let i = 0; i < bufferLength; i++) {
-        barHeight = (dataArray[i] / 255) * height * 0.85
-        if (barHeight < 3) barHeight = 3
-
-        ctx.fillStyle = gradient
-        ctx.beginPath()
-        // Draw bars with rounded tops
-        ctx.roundRect(x, height - barHeight, barWidth - 2.5, barHeight, 2.5)
-        ctx.fill()
-
-        x += barWidth
-      }
+      if (canvas) drawCanvas(canvas, false)
+      if (isFullscreenMode && fsCanvas) drawCanvas(fsCanvas, true)
     }
 
     renderLoop()
@@ -446,7 +463,40 @@ export default function PlayerPage() {
     return () => {
       if (animationRef.current) cancelAnimationFrame(animationRef.current)
     }
-  }, [visualizerOn, isPlaying])
+  }, [visualizerOn, isPlaying, isFullscreenMode])
+
+  // Sync Native Fullscreen with React State
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      const isNativeFS = !!document.fullscreenElement
+      if (!isNativeFS) {
+        setIsFullscreenMode(false)
+      }
+    }
+    document.addEventListener("fullscreenchange", handleFullscreenChange)
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange)
+    }
+  }, [])
+
+  const toggleFullscreenMode = () => {
+    if (!isFullscreenMode) {
+      setIsFullscreenMode(true)
+      const docEl = document.documentElement
+      if (docEl.requestFullscreen) {
+        docEl.requestFullscreen().catch((err) => {
+          console.warn("Could not enter native fullscreen", err)
+        })
+      }
+    } else {
+      setIsFullscreenMode(false)
+      if (document.fullscreenElement) {
+        document.exitFullscreen().catch((err) => {
+          console.warn("Could not exit native fullscreen", err)
+        })
+      }
+    }
+  }
 
   // Global Keyboard Shortcuts
   useEffect(() => {
@@ -490,12 +540,18 @@ export default function PlayerPage() {
         case "l":
           if (currentTrackId) toggleLikeTrack(currentTrackId)
           break
+        case "escape":
+          setIsFullscreenMode(false)
+          if (document.fullscreenElement) {
+            document.exitFullscreen().catch(() => {})
+          }
+          break
       }
     }
 
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [currentTrackId, queue, isPlaying, isMuted, volume])
+  }, [currentTrackId, queue, isPlaying, isMuted, volume, isFullscreenMode])
 
   const seekOffset = (seconds: number) => {
     if (audioRef.current) {
@@ -2065,8 +2121,341 @@ export default function PlayerPage() {
               }}
             />
           </div>
+
+          <button
+            onClick={toggleFullscreenMode}
+            disabled={!currentTrackId}
+            className="text-white/40 hover:text-white transition-colors cursor-pointer shrink-0 disabled:opacity-20 ml-2"
+            title="Fullscreen Mode"
+          >
+            <Maximize2 className="w-4.5 h-4.5" />
+          </button>
         </div>
       </footer>
+
+      {/* Fullscreen Overlay */}
+      {isFullscreenMode && (
+        <div className="fixed inset-0 z-50 bg-[#070b12] flex flex-col justify-between p-6 md:p-10 select-none overflow-hidden animate-fade-in">
+          {/* Dynamic Blurred Ambient Background */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+            <div className={`absolute inset-0 bg-gradient-to-tr ${currentTrack ? getCoverGradient(currentTrack.coverArt) : "from-[#0e1622] to-[#070b12]"} opacity-20 blur-3xl scale-150 transition-all duration-1000`} />
+            {currentTrack && isUrl(currentTrack.coverArt) && (
+              <img
+                src={currentTrack.coverArt}
+                alt=""
+                className="absolute inset-0 w-full h-full object-cover opacity-15 blur-3xl scale-125 transition-all duration-1000"
+              />
+            )}
+            {/* Pulsing colored ambient orbs */}
+            <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-red-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '8s' }} />
+            <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-indigo-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '12s', animationDelay: '2s' }} />
+          </div>
+
+          {/* Top Bar: Title & Minimize Button */}
+          <header className="z-10 flex items-center justify-between border-b border-white/5 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-6 h-6 rounded-lg bg-white flex items-center justify-center p-1 shadow-md">
+                <Image
+                  src="/images/hv-logo.png"
+                  alt="HV Logo"
+                  width={16}
+                  height={16}
+                  className="object-contain"
+                />
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-[0.25em] text-white/80">
+                HEAVENVERSE PLAYER
+              </span>
+            </div>
+            
+            <button
+              onClick={toggleFullscreenMode}
+              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 hover:text-white transition-all cursor-pointer shadow-sm active:scale-95 flex items-center gap-2 text-xs font-bold"
+            >
+              <Minimize2 className="w-4 h-4" />
+              <span>Exit Fullscreen</span>
+            </button>
+          </header>
+
+          {/* Main Visualizer Workspace (Turntable + Music details) */}
+          <main className="z-10 flex-1 flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-16 my-8 overflow-y-auto custom-scrollbar">
+            
+            {/* Turntable Block */}
+            <div className="flex-1 flex justify-center items-center">
+              <div className="relative flex items-center justify-center">
+                {/* Turntable Base Plate Shadow/Glow */}
+                <div className="absolute -inset-4 bg-white/[0.02] dark:bg-black/40 rounded-full blur-xl pointer-events-none" />
+
+                {/* Turntable Vinyl Record */}
+                <div 
+                  className="relative w-64 h-64 sm:w-80 sm:h-80 md:w-[400px] md:h-[400px] rounded-full bg-[#080b11] border border-white/10 flex items-center justify-center shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] transition-all duration-700 animate-[spin_25s_linear_infinite]"
+                  style={{ animationPlayState: isPlaying ? "running" : "paused" }}
+                >
+                  {/* Concentric grooved lines simulating vinyl record tracks */}
+                  <div className="absolute inset-4 rounded-full border border-white/[0.03]" />
+                  <div className="absolute inset-8 rounded-full border border-white/[0.02]" />
+                  <div className="absolute inset-12 rounded-full border border-white/[0.03]" />
+                  <div className="absolute inset-16 rounded-full border border-white/[0.02]" />
+                  <div className="absolute inset-20 rounded-full border border-white/[0.03]" />
+                  <div className="absolute inset-24 rounded-full border border-white/[0.02]" />
+                  <div className="absolute inset-28 rounded-full border border-white/[0.03]" />
+                  <div className="absolute inset-32 rounded-full border border-white/[0.02]" />
+                  <div className="absolute inset-36 rounded-full border border-white/[0.03]" />
+
+                  {/* Center Record Label */}
+                  <div className="w-24 h-24 sm:w-32 sm:h-32 md:w-[150px] md:h-[150px] rounded-full overflow-hidden border-[6px] border-[#10131a] relative flex items-center justify-center bg-slate-900 shadow-inner">
+                    {currentTrack && isUrl(currentTrack.coverArt) ? (
+                      <img
+                        src={currentTrack.coverArt}
+                        alt="Cover Art"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className={`w-full h-full bg-gradient-to-br ${currentTrack ? getCoverGradient(currentTrack.coverArt) : "from-[#1e293b] to-[#0f172a]"} flex items-center justify-center`}>
+                        <Music className="w-8 h-8 text-white/60" />
+                      </div>
+                    )}
+                    
+                    {/* Vinyl Center Hole */}
+                    <div className="absolute w-5 h-5 rounded-full bg-black border-[3px] border-white/20 shadow-inner flex items-center justify-center">
+                      <div className="w-1.5 h-1.5 rounded-full bg-white/40" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Turntable Tonearm (Sleek Glassmorphic Pivot) */}
+                <div 
+                  className="absolute -top-10 right-2 w-32 h-44 pointer-events-none hidden md:block origin-top-right transition-transform duration-1000"
+                  style={{
+                    transform: isPlaying ? "rotate(15deg)" : "rotate(0deg)"
+                  }}
+                >
+                  <svg className="w-full h-full drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]" viewBox="0 0 100 150" fill="none">
+                    {/* Arm Pivot Base */}
+                    <circle cx="80" cy="20" r="16" fill="#1e293b" stroke="#475569" strokeWidth="2" />
+                    <circle cx="80" cy="20" r="6" fill="#64748b" />
+                    
+                    {/* The Metal Arm rod */}
+                    <path d="M 80 20 L 50 110 L 40 135" stroke="#94a3b8" strokeWidth="3" strokeLinecap="round" />
+                    <path d="M 50 110 L 40 135" stroke="#cbd5e1" strokeWidth="1.5" strokeLinecap="round" />
+
+                    {/* Cartridge headshell */}
+                    <rect x="30" y="130" width="16" height="8" rx="2" transform="rotate(-30, 38, 134)" fill="#334155" stroke="#475569" />
+                    <circle cx="34" cy="136" r="2" fill="#ef4444" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* Song Metadata & Visualizer Block */}
+            <div className="flex-1 w-full max-w-xl flex flex-col gap-6 lg:gap-8 justify-center">
+              
+              {/* Song Information Card */}
+              <div className="flex flex-col gap-2 text-center lg:text-left">
+                <div className="flex items-center justify-center lg:justify-start gap-4">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-wide text-white drop-shadow-md truncate">
+                    {currentTrack?.title || "No Song Playing"}
+                  </h2>
+                  {currentTrack && (
+                    <button
+                      onClick={() => toggleLikeTrack(currentTrack.id)}
+                      className={`p-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 transition-all ${
+                        likedTrackIds.includes(currentTrack.id) ? "text-red-400" : "text-white/35 hover:text-white"
+                      }`}
+                    >
+                      <Heart className="w-4 h-4" fill={likedTrackIds.includes(currentTrack.id) ? "currentColor" : "none"} />
+                    </button>
+                  )}
+                </div>
+                <p className="text-sm sm:text-base font-semibold text-white/55 drop-shadow-sm truncate mt-1">
+                  {currentTrack?.artist || "Use converter or local upload to get started"}
+                </p>
+                <div className="flex items-center justify-center lg:justify-start gap-2 mt-2">
+                  <span className="text-[10px] font-bold uppercase tracking-wider bg-white/5 border border-white/10 px-2 py-0.5 rounded-md text-white/40">
+                    {currentTrack?.album || "Offline Library"}
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider bg-white/5 border border-white/10 px-2 py-0.5 rounded-md text-white/40">
+                    {currentTrack?.type || "Local"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Large Audio Visualizer Canvas */}
+              {visualizerOn && (
+                <div className="h-28 md:h-36 bg-black/35 backdrop-blur-md rounded-2xl border border-white/10 p-3 flex items-center justify-center overflow-hidden relative shadow-inner">
+                  {/* Floating particles */}
+                  <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
+                  
+                  <canvas
+                    ref={fullscreenCanvasRef}
+                    width={480}
+                    height={120}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              )}
+
+            </div>
+          </main>
+
+          {/* Controls Console */}
+          <footer className="z-10 bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-5 md:p-6 shadow-2xl flex flex-col gap-4">
+            {/* Timeline Progress Bar */}
+            <div className="w-full flex items-center gap-4">
+              <span className="text-[11px] text-white/45 font-mono w-10 text-right select-none">
+                {formatTime(currentTime)}
+              </span>
+              <div className="flex-1 relative flex items-center group h-4">
+                <input
+                  type="range"
+                  min="0"
+                  max={duration || 100}
+                  value={currentTime}
+                  onChange={(e) => {
+                    const val = Number(e.target.value)
+                    if (audioRef.current) audioRef.current.currentTime = val
+                    setCurrentTime(val)
+                  }}
+                  className="w-full h-1.5 bg-white/15 rounded-full appearance-none cursor-pointer accent-white focus:outline-none"
+                  style={{
+                    background: `linear-gradient(to right, rgba(239, 68, 68, 0.9) ${
+                      duration > 0 ? (currentTime / duration) * 100 : 0
+                    }%, rgba(255, 255, 255, 0.15) ${duration > 0 ? (currentTime / duration) * 100 : 0}%)`
+                  }}
+                />
+              </div>
+              <span className="text-[11px] text-white/45 font-mono w-10 text-left select-none">
+                {formatTime(duration)}
+              </span>
+            </div>
+
+            {/* Playback Controls (Shuffle, Prev, Play/Pause, Next, Repeat & Volume Control) */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-5">
+              
+              {/* Left Spacer or details on large screen */}
+              <div className="w-full sm:w-1/4 flex justify-center sm:justify-start items-center gap-3">
+                {currentTrack && (
+                  <span className="text-[10px] text-white/35 font-mono hidden md:inline truncate">
+                    Playing: {currentTrack.title}
+                  </span>
+                )}
+              </div>
+
+              {/* Center control buttons */}
+              <div className="flex items-center gap-6">
+                <button
+                  onClick={() => {
+                    const nextVal = !shuffleOn
+                    setShuffleOn(nextVal)
+                    localStorage.setItem("hv_shuffle", nextVal.toString())
+                  }}
+                  className={`p-2.5 rounded-full transition-all hover:scale-110 active:scale-95 ${
+                    shuffleOn ? "text-red-400 bg-red-500/10 border border-red-500/20" : "text-white/40 hover:text-white"
+                  }`}
+                  title="Shuffle"
+                >
+                  <Shuffle className="w-4.5 h-4.5" />
+                </button>
+
+                <button
+                  onClick={playPrevTrack}
+                  disabled={queue.length === 0}
+                  className="p-2.5 rounded-full text-white/40 hover:text-white transition-all hover:scale-110 active:scale-95 disabled:opacity-20 shrink-0"
+                  title="Previous"
+                >
+                  <SkipBack className="w-5 h-5 fill-current" />
+                </button>
+
+                <button
+                  onClick={() => setIsPlaying(!isPlaying)}
+                  disabled={!currentTrackId}
+                  className="w-14 h-14 rounded-full bg-white text-black hover:bg-white/90 disabled:bg-white/10 disabled:text-white/20 transition-all hover:scale-115 active:scale-90 flex items-center justify-center shadow-lg cursor-pointer shrink-0 border border-white/20"
+                  title={isPlaying ? "Pause" : "Play"}
+                >
+                  {isPlaying ? (
+                    <Pause className="w-6 h-6 fill-current" />
+                  ) : (
+                    <Play className="w-6 h-6 fill-current ml-1" />
+                  )}
+                </button>
+
+                <button
+                  onClick={playNextTrack}
+                  disabled={queue.length === 0}
+                  className="p-2.5 rounded-full text-white/40 hover:text-white transition-all hover:scale-110 active:scale-95 disabled:opacity-20 shrink-0"
+                  title="Next"
+                >
+                  <SkipForward className="w-5 h-5 fill-current" />
+                </button>
+
+                <button
+                  onClick={() => {
+                    const cycles: ("off" | "all" | "one")[] = ["off", "all", "one"]
+                    const nextIdx = (cycles.indexOf(repeatMode) + 1) % cycles.length
+                    const nextVal = cycles[nextIdx]
+                    setRepeatMode(nextVal)
+                    localStorage.setItem("hv_repeat", nextVal)
+                  }}
+                  className={`p-2.5 rounded-full transition-all relative hover:scale-110 active:scale-95 ${
+                    repeatMode !== "off" ? "text-red-400 bg-red-500/10 border border-red-500/20" : "text-white/40 hover:text-white"
+                  }`}
+                  title={`Repeat: ${repeatMode}`}
+                >
+                  <Repeat className="w-4.5 h-4.5" />
+                  {repeatMode === "one" && (
+                    <span className="absolute top-1 right-1 w-3 h-3 bg-red-500 text-white text-[7.5px] rounded-full flex items-center justify-center font-bold">
+                      1
+                    </span>
+                  )}
+                </button>
+              </div>
+
+              {/* Right Side: Volume control */}
+              <div className="w-full sm:w-1/4 flex items-center justify-center sm:justify-end gap-3.5">
+                <button
+                  onClick={() => {
+                    const nextVal = !isMuted
+                    setIsMuted(nextVal)
+                    localStorage.setItem("hv_muted", nextVal.toString())
+                  }}
+                  className="text-white/40 hover:text-white transition-colors cursor-pointer shrink-0"
+                  title="Mute"
+                >
+                  {isMuted || volume === 0 ? (
+                    <VolumeX className="w-4.5 h-4.5" />
+                  ) : volume < 35 ? (
+                    <Volume1 className="w-4.5 h-4.5" />
+                  ) : (
+                    <Volume2 className="w-4.5 h-4.5" />
+                  )}
+                </button>
+                
+                <div className="w-24 md:w-32 flex items-center h-4">
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={isMuted ? 0 : volume}
+                    onChange={(e) => {
+                      const val = Number(e.target.value)
+                      setVolume(val)
+                      localStorage.setItem("hv_volume", val.toString())
+                      if (isMuted) setIsMuted(false)
+                    }}
+                    className="w-full h-1.5 bg-white/15 rounded-full appearance-none cursor-pointer accent-white focus:outline-none"
+                    style={{
+                      background: `linear-gradient(to right, rgba(255, 255, 255, 0.8) ${
+                        isMuted ? 0 : volume
+                      }%, rgba(255, 255, 255, 0.15) ${isMuted ? 0 : volume}%)`
+                    }}
+                  />
+                </div>
+              </div>
+
+            </div>
+          </footer>
+        </div>
+      )}
     </div>
   )
 }
