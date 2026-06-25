@@ -7,3 +7,4 @@ allowBuilds:
   protobufjs: true
   sharp: true
   yt-dlp-exec: true
+minimumReleaseAge: 0

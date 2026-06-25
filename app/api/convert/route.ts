@@ -4,6 +4,7 @@ import fs from "fs";
 import { create } from "yt-dlp-exec";
 import ffmpegPath from "ffmpeg-static";
 import { cleanOldDownloads } from "@/lib/cleanup";
+import { getYtDlpPath, getYtDlpOptions } from "@/lib/ytdlp";
 
 export async function POST(req: Request) {
   try {
@@ -25,8 +26,9 @@ export async function POST(req: Request) {
       fs.mkdirSync(outputDir, { recursive: true });
     }
 
-    // Initialize local yt-dlp.exe wrapper
-    const ytdlp = create(path.join(process.cwd(), "yt-dlp.exe"));
+    // Initialize local/remote yt-dlp wrapper dynamically
+    const ytdlpPath = await getYtDlpPath();
+    const ytdlp = create(ytdlpPath);
 
     console.log("Starting yt-dlp...");
     console.log("URL:", url);
@@ -34,13 +36,13 @@ export async function POST(req: Request) {
     console.log("ytdlp loaded:", !!ytdlp);
 
     // Extract title first to return the resolved file path accurately
-    const info = await ytdlp(url, {
+    const info = await ytdlp(url, getYtDlpOptions({
       dumpSingleJson: true,
       noWarnings: true,
       noPlaylist: true,
-      youtubeSkipDashManifest: true,
+      extractorArgs: "youtube:player_client=default,-android_sdkless",
       jsRuntimes: `node:${process.execPath}`,
-    }) as any;
+    })) as any;
 
     const resolvedTitle = info.title || "audio";
     const safeTitle = resolvedTitle.replace(/[\\/:*?"<>|]/g, "_"); // Sanitize filename
@@ -65,16 +67,60 @@ export async function POST(req: Request) {
     // Parse the audio quality parameter from client (default to 320 kbps if invalid/not provided)
     const parsedQuality = quality ? (isNaN(Number(quality)) ? 320 : Number(quality)) : 320;
 
-    // Download audio and convert using static ffmpeg
-    await ytdlp(url, {
-      extractAudio: true,
-      audioFormat: "mp3",
-      audioQuality: parsedQuality,
+    // 1. Download the raw audio stream directly using yt-dlp (no postprocessing, bypassing ffprobe requirement)
+    const downloadTemplate = path.join(outputDir, `${safeTitle}.%(ext)s`);
+    await ytdlp(url, getYtDlpOptions({
+      format: "bestaudio",
       noPlaylist: true,
-      ffmpegLocation: resolvedFfmpegPath || undefined,
-      output: path.join(outputDir, `${safeTitle}.%(ext)s`),
+      output: downloadTemplate,
+      extractorArgs: "youtube:player_client=default,-android_sdkless",
       jsRuntimes: `node:${process.execPath}`,
+    }));
+
+    // 2. Find the downloaded raw audio file (webm, m4a, opus, etc.)
+    const extensions = ["webm", "m4a", "opus", "ogg", "aac"];
+    let downloadedFilePath = "";
+    for (const ext of extensions) {
+      const checkPath = path.join(outputDir, `${safeTitle}.${ext}`);
+      if (fs.existsSync(checkPath)) {
+        downloadedFilePath = checkPath;
+        break;
+      }
+    }
+
+    if (!downloadedFilePath) {
+      // Fallback: search directory for any file starting with safeTitle and not ending with .mp3
+      const files = fs.readdirSync(outputDir);
+      const match = files.find(f => f.startsWith(safeTitle) && !f.endsWith(".mp3"));
+      if (match) {
+        downloadedFilePath = path.join(outputDir, match);
+      }
+    }
+
+    if (!downloadedFilePath) {
+      throw new Error("Could not locate the downloaded audio stream file.");
+    }
+
+    // 3. Transcode to MP3 using local ffmpeg directly
+    const finalMp3Path = path.join(outputDir, outputFilename);
+    const { execFileSync } = require("child_process");
+    
+    console.log(`Directly transcoding to MP3: "${resolvedFfmpegPath}" -y -i "${downloadedFilePath}" -ab ${parsedQuality}k "${finalMp3Path}"`);
+    execFileSync(resolvedFfmpegPath, [
+      "-y",
+      "-i",
+      downloadedFilePath,
+      "-ab",
+      `${parsedQuality}k`,
+      finalMp3Path,
+    ], {
+      stdio: "ignore",
     });
+
+    // 4. Delete the temporary raw audio download file
+    if (fs.existsSync(downloadedFilePath)) {
+      fs.unlinkSync(downloadedFilePath);
+    }
 
     return NextResponse.json({
       success: true,

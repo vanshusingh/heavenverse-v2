@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import path from "path";
 import { create } from "yt-dlp-exec";
+import { getYtDlpPath, getYtDlpOptions } from "@/lib/ytdlp";
 
 export async function POST(req: Request) {
   try {
@@ -10,8 +11,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "URL is required" }, { status: 400 });
     }
 
-    // Initialize yt-dlp-exec pointing to our local standalone executable
-    const ytdlp = create(path.join(process.cwd(), "yt-dlp.exe"));
+    // Initialize local/remote yt-dlp wrapper dynamically
+    const ytdlpPath = await getYtDlpPath();
+    const ytdlp = create(ytdlpPath);
 
     console.log("Starting yt-dlp...");
     console.log("URL:", url);
@@ -19,13 +21,13 @@ export async function POST(req: Request) {
     console.log("ytdlp loaded:", !!ytdlp);
 
     // Extract metadata using yt-dlp with robust parsing flags
-    const info = await ytdlp(url, {
+    const info = await ytdlp(url, getYtDlpOptions({
       dumpSingleJson: true,
       noWarnings: true,
       noPlaylist: true,
-      youtubeSkipDashManifest: true,
+      extractorArgs: "youtube:player_client=default,-android_sdkless",
       jsRuntimes: `node:${process.execPath}`,
-    }) as any;
+    })) as any;
 
     return NextResponse.json({
       title: info.title || "Unknown Title",
