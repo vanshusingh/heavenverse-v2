@@ -33,8 +33,8 @@ export async function getYtDlpPath(): Promise<string> {
 
   console.log("yt-dlp not found in /tmp, downloading Linux binary...");
 
-  // Download the official Linux yt-dlp binary from GitHub releases
-  const response = await fetch("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp");
+  // Download the official standalone Linux yt-dlp binary from GitHub releases
+  const response = await fetch("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux");
   if (!response.ok) {
     throw new Error(`Failed to download yt-dlp binary: ${response.statusText}`);
   }
