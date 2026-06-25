@@ -25,6 +25,7 @@ export async function POST(req: Request) {
       dumpSingleJson: true,
       noWarnings: true,
       noPlaylist: true,
+
       extractorArgs: "youtube:player_client=default,-android_sdkless",
       jsRuntimes: `node:${process.execPath}`,
     })) as any;
