@@ -12,6 +12,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  transpilePackages: ["gsap"],
   outputFileTracingRoot: __dirname,
   serverExternalPackages: ["ffmpeg-static", "yt-dlp-exec"],
   outputFileTracingExcludes: {
