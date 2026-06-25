@@ -13,6 +13,7 @@ const nextConfig = {
     unoptimized: true,
   },
   outputFileTracingRoot: __dirname,
+  serverExternalPackages: ["ffmpeg-static", "yt-dlp-exec"],
 }
 
 export default nextConfig
