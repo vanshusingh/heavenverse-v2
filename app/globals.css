@@ -1,7 +1,8 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import url("https://db.onlinewebfonts.com/c/a64ff11d2c24584c767f6257e880dc65?family=Helvetica+Regular");
 @source "../components";
 @source "../app";
-@import "tw-animate-css";
 
 @variant dark (&:is(.dark *));
 
@@ -174,4 +175,56 @@ input[type="range"]::-moz-range-thumb {
 }
 input[type="range"]:hover::-moz-range-thumb {
   transform: scale(1.3);
+}
+
+/* quietpress Custom Styling */
+
+html {
+  font-family: 'Helvetica Regular', Helvetica, Arial, sans-serif;
+}
+
+.font-helvetica {
+  font-family: 'Helvetica Regular', Helvetica, Arial, sans-serif;
+}
+
+.liquid-glass {
+  background: rgba(255, 255, 255, 0.01);
+  background-blend-mode: luminosity;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: none;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+.liquid-glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.4px;
+  background: linear-gradient(180deg,
+    rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.15) 20%,
+    rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%,
+    rgba(255,255,255,0.15) 80%, rgba(255,255,255,0.45) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: none; }
+}
+.animate-fade-up {
+  animation: fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+.delay-1 { animation-delay: 0.1s; }
+.delay-2 { animation-delay: 0.25s; }
+.delay-3 { animation-delay: 0.4s; }
+.delay-4 { animation-delay: 0.55s; }
+.delay-5 { animation-delay: 0.75s; }
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-up { animation: none; }
 }
