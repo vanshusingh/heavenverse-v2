@@ -14,6 +14,13 @@ const nextConfig = {
   },
   outputFileTracingRoot: __dirname,
   serverExternalPackages: ["ffmpeg-static", "yt-dlp-exec"],
+  outputFileTracingExcludes: {
+    '*': [
+      '**/.next/cache/**/*',
+      '**/.git/**/*',
+      '**/yt-dlp.exe',
+    ],
+  },
 }
 
 export default nextConfig
