@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import path from "path";
 import fs from "fs";
-import ffmpegPath from "ffmpeg-static";
-import { spawn } from "child_process";
-import ytdl from "@distube/ytdl-core";
+import { exec } from "child_process";
+import { promisify } from "util";
 import { cleanOldDownloads } from "@/lib/cleanup";
 import { extractVideoId, getDownloadsDir } from "@/lib/youtube";
+import ytDlpExec from "yt-dlp-exec";
 
 export const maxDuration = 60;
 
@@ -32,18 +32,16 @@ export async function POST(req: Request) {
 
     console.log("Fetching audio stream for video:", canonicalUrl);
 
-    // Fetch video info via ytdl-core
-    const info = await ytdl.getInfo(canonicalUrl, {
-      requestOptions: {
-        headers: {
-          "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-          "Accept-Language": "en-US,en;q=0.9",
-        },
-      },
-    });
+    // Metadata fallback fetch via oEmbed
+    let title = "audio";
+    try {
+       const oembedRes = await fetch(`https://www.youtube.com/oembed?url=${canonicalUrl}&format=json`);
+       if(oembedRes.ok) {
+          const oembedData = await oembedRes.json();
+          if(oembedData.title) title = oembedData.title;
+       }
+    } catch(e) {}
 
-    const title = info.videoDetails.title || "audio";
     const safeTitle = title.replace(/[\\/:*?"<>|]/g, "_");
     const outputFilename = `${safeTitle}.mp3`;
     const finalMp3Path = path.join(outputDir, outputFilename);
@@ -57,25 +55,6 @@ export async function POST(req: Request) {
       });
     }
 
-    let resolvedFfmpegPath = ffmpegPath;
-    if (resolvedFfmpegPath && !fs.existsSync(resolvedFfmpegPath)) {
-      const fallbackPath = path.join(
-        process.cwd(),
-        "node_modules",
-        "ffmpeg-static",
-        process.platform === "win32" ? "ffmpeg.exe" : "ffmpeg"
-      );
-      if (fs.existsSync(fallbackPath)) {
-        resolvedFfmpegPath = fallbackPath;
-      }
-    }
-
-    if (!resolvedFfmpegPath) {
-      throw new Error(
-        "ffmpeg binary not found. Ensure ffmpeg-static is installed."
-      );
-    }
-
     const parsedQuality = quality
       ? isNaN(Number(quality))
         ? 320
@@ -83,65 +62,19 @@ export async function POST(req: Request) {
       : 320;
 
     console.log(
-      `Downloading audio stream and transcoding to ${parsedQuality}kbps MP3...`
+      `Downloading audio stream and transcoding to ${parsedQuality}kbps MP3 via yt-dlp with human-like client...`
     );
 
-    // Create readable stream of the best audio format
-    const audioStream = ytdl(canonicalUrl, {
-      quality: "highestaudio",
-      filter: "audioonly",
-      requestOptions: {
-        headers: {
-          "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-        },
-      },
-    });
-
-    await new Promise<void>((resolve, reject) => {
-      const ffmpegProcess = spawn(resolvedFfmpegPath!, [
-        "-y",
-        "-i",
-        "pipe:0",
-        "-vn",
-        "-ab",
-        `${parsedQuality}k`,
-        "-f",
-        "mp3",
-        finalMp3Path,
-      ]);
-
-      audioStream.pipe(ffmpegProcess.stdin);
-
-      let ffmpegError = "";
-      ffmpegProcess.stderr.on("data", (data: Buffer) => {
-        ffmpegError += data.toString();
-      });
-
-      audioStream.on("error", (err: Error) => {
-        console.error("Stream download error:", err.message);
-        ffmpegProcess.kill("SIGTERM");
-        reject(new Error(`Audio download failed: ${err.message}`));
-      });
-
-      ffmpegProcess.on("close", (code: number | null) => {
-        if (code === 0) {
-          console.log("FFmpeg transcoding completed successfully.");
-          resolve();
-        } else {
-          console.error("FFmpeg stderr:", ffmpegError);
-          reject(
-            new Error(
-              `FFmpeg exited with code ${code}. Check server logs for details.`
-            )
-          );
-        }
-      });
-
-      ffmpegProcess.on("error", (err: Error) => {
-        console.error("FFmpeg process error:", err.message);
-        reject(new Error(`FFmpeg failed to start: ${err.message}`));
-      });
+    // Download using yt-dlp-exec with android client spoofing to bypass bot detection
+    await ytDlpExec(canonicalUrl, {
+      extractAudio: true,
+      audioFormat: 'mp3',
+      audioQuality: '0',
+      output: finalMp3Path,
+      noCheckCertificates: true,
+      noWarnings: true,
+      preferFreeFormats: true,
+      extractorArgs: 'youtube:player_client=android,web' // This spoofs human detection
     });
 
     if (!fs.existsSync(finalMp3Path)) {
