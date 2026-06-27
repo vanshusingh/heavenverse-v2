@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import path from "path";
 import fs from "fs";
-import ytdl from "@distube/ytdl-core";
 import ffmpegPath from "ffmpeg-static";
 import { spawn } from "child_process";
+import { Readable } from "stream";
 import { cleanOldDownloads } from "@/lib/cleanup";
-import { extractVideoId, getDownloadsDir } from "@/lib/youtube";
+import { extractVideoId, getDownloadsDir, getAudioStreamUrl } from "@/lib/youtube";
 
 // Increase max duration for serverless (Vercel Pro: 60s)
 export const maxDuration = 60;
@@ -29,59 +29,13 @@ export async function POST(req: Request) {
       );
     }
 
-    const canonicalUrl = `https://www.youtube.com/watch?v=${videoId}`;
     const outputDir = getDownloadsDir();
 
-    // Fetch video info to get the title for the filename
-    console.log("Fetching video info via ytdl-core...");
+    // Get audio stream URL via Piped/Invidious (bypasses YouTube bot detection)
+    console.log("Fetching audio stream URL for video:", videoId);
+    const { streamUrl, title } = await getAudioStreamUrl(videoId);
 
-    let info;
-    try {
-      info = await ytdl.getInfo(canonicalUrl, {
-        requestOptions: {
-          headers: {
-            "User-Agent":
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-            "Accept-Language": "en-US,en;q=0.9",
-            Accept:
-              "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-          },
-        },
-      });
-    } catch (infoErr: any) {
-      console.error("ytdl-core getInfo failed:", infoErr.message);
-
-      // Parse common errors into user-friendly messages
-      if (
-        infoErr.message?.includes("Sign in") ||
-        infoErr.message?.includes("bot")
-      ) {
-        return NextResponse.json(
-          {
-            error:
-              "YouTube is requiring sign-in verification. This may be a temporary restriction. Please try again in a few minutes.",
-          },
-          { status: 503 }
-        );
-      }
-      if (
-        infoErr.message?.includes("private") ||
-        infoErr.message?.includes("unavailable")
-      ) {
-        return NextResponse.json(
-          {
-            error:
-              "This video is unavailable. It might be private, deleted, or restricted.",
-          },
-          { status: 404 }
-        );
-      }
-
-      throw infoErr;
-    }
-
-    const resolvedTitle = info.videoDetails.title || "audio";
-    const safeTitle = resolvedTitle.replace(/[\\/:*?"<>|]/g, "_");
+    const safeTitle = (title || "audio").replace(/[\\/:*?"<>|]/g, "_");
     const outputFilename = `${safeTitle}.mp3`;
     const finalMp3Path = path.join(outputDir, outputFilename);
 
@@ -109,7 +63,9 @@ export async function POST(req: Request) {
     }
 
     if (!resolvedFfmpegPath) {
-      throw new Error("ffmpeg binary not found. Ensure ffmpeg-static is installed.");
+      throw new Error(
+        "ffmpeg binary not found. Ensure ffmpeg-static is installed."
+      );
     }
 
     // Parse audio quality (default 320kbps)
@@ -119,25 +75,43 @@ export async function POST(req: Request) {
         : Number(quality)
       : 320;
 
-    console.log(`Starting audio download + transcode to ${parsedQuality}kbps MP3...`);
+    console.log(
+      `Downloading audio stream and transcoding to ${parsedQuality}kbps MP3...`
+    );
 
-    // Download audio stream via ytdl-core and pipe directly through ffmpeg
+    // Download the audio stream from the proxied URL
+    const streamRes = await fetch(streamUrl, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+      },
+    });
+
+    if (!streamRes.ok || !streamRes.body) {
+      throw new Error(
+        `Failed to download audio stream: HTTP ${streamRes.status}`
+      );
+    }
+
+    // Convert Web ReadableStream to Node.js Readable stream
+    const reader = streamRes.body.getReader();
+    const nodeStream = new Readable({
+      async read() {
+        const { done, value } = await reader.read();
+        if (done) {
+          this.push(null);
+        } else {
+          this.push(Buffer.from(value));
+        }
+      },
+    });
+
+    // Pipe the downloaded audio stream through ffmpeg for MP3 transcoding
     await new Promise<void>((resolve, reject) => {
-      const audioStream = ytdl(canonicalUrl, {
-        filter: "audioonly",
-        quality: "highestaudio",
-        requestOptions: {
-          headers: {
-            "User-Agent":
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-          },
-        },
-      });
-
       const ffmpegProcess = spawn(resolvedFfmpegPath!, [
         "-y",
         "-i",
-        "pipe:0", // Read from stdin (piped audio stream)
+        "pipe:0", // Read from stdin
         "-vn", // No video
         "-ab",
         `${parsedQuality}k`,
@@ -146,16 +120,16 @@ export async function POST(req: Request) {
         finalMp3Path,
       ]);
 
-      // Pipe the ytdl audio stream into ffmpeg's stdin
-      audioStream.pipe(ffmpegProcess.stdin);
+      // Pipe the audio stream into ffmpeg's stdin
+      nodeStream.pipe(ffmpegProcess.stdin);
 
       let ffmpegError = "";
       ffmpegProcess.stderr.on("data", (data: Buffer) => {
         ffmpegError += data.toString();
       });
 
-      audioStream.on("error", (err: Error) => {
-        console.error("ytdl-core stream error:", err.message);
+      nodeStream.on("error", (err: Error) => {
+        console.error("Stream download error:", err.message);
         ffmpegProcess.kill("SIGTERM");
         reject(new Error(`Audio download failed: ${err.message}`));
       });
@@ -200,8 +174,8 @@ export async function POST(req: Request) {
       errorMessage =
         "This video is unavailable. It might be private, deleted, or restricted by the owner.";
     } else if (
-      errorMessage.includes("Sign in to confirm your age") ||
-      errorMessage.includes("confirm your age")
+      errorMessage.includes("age") &&
+      errorMessage.includes("restricted")
     ) {
       errorMessage =
         "This video is age-restricted and cannot be downloaded.";

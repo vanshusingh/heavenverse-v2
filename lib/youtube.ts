@@ -32,7 +32,6 @@ export function extractVideoId(url: string): string | null {
   return null;
 }
 
-
 /**
  * Get the platform-aware downloads directory.
  * - On Vercel/Linux: uses /tmp/ (only writable location in serverless)
@@ -51,4 +50,156 @@ export function getDownloadsDir(): string {
   }
 
   return dir;
+}
+
+// Public Piped API instances (proxy audio streams through their servers)
+const PIPED_INSTANCES = [
+  "https://pipedapi.kavin.rocks",
+  "https://pipedapi.adminforge.de",
+  "https://pipedapi.in.projectsegfau.lt",
+];
+
+// Public Invidious API instances (provide direct stream URLs)
+const INVIDIOUS_INSTANCES = [
+  "https://inv.nadeko.net",
+  "https://invidious.io.lol",
+  "https://vid.puffyan.us",
+];
+
+const BROWSER_UA =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
+
+export interface AudioStreamResult {
+  streamUrl: string;
+  title: string;
+  duration: number;
+}
+
+/**
+ * Get an audio stream URL by querying Piped and Invidious APIs.
+ * These services extract YouTube stream URLs from their own servers,
+ * completely bypassing YouTube's bot detection on Vercel/cloud IPs.
+ *
+ * Piped is preferred because it proxies streams through its own servers.
+ */
+export async function getAudioStreamUrl(
+  videoId: string
+): Promise<AudioStreamResult> {
+  const errors: string[] = [];
+
+  // 1. Try Piped instances (proxied streams — most reliable from Vercel)
+  for (const instance of PIPED_INSTANCES) {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 10000);
+
+      const res = await fetch(`${instance}/streams/${videoId}`, {
+        headers: {
+          "User-Agent": BROWSER_UA,
+          Accept: "application/json",
+        },
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeout);
+
+      if (!res.ok) {
+        errors.push(`Piped ${instance}: HTTP ${res.status}`);
+        continue;
+      }
+
+      const data = await res.json();
+      const audioStreams: any[] = data.audioStreams || [];
+
+      // Pick the highest bitrate audio stream
+      const best = audioStreams
+        .filter(
+          (s: any) =>
+            s.mimeType?.startsWith("audio/") && s.url && s.url.length > 0
+        )
+        .sort((a: any, b: any) => (b.bitrate || 0) - (a.bitrate || 0))[0];
+
+      if (best?.url) {
+        console.log(
+          `Audio stream found via Piped (${instance}): ${best.mimeType} @ ${best.bitrate}bps`
+        );
+        return {
+          streamUrl: best.url,
+          title: data.title || "audio",
+          duration: data.duration || 0,
+        };
+      }
+
+      errors.push(`Piped ${instance}: no audio streams in response`);
+    } catch (err: any) {
+      errors.push(
+        `Piped ${instance}: ${err.name === "AbortError" ? "timeout" : err.message}`
+      );
+      continue;
+    }
+  }
+
+  // 2. Fallback to Invidious instances (direct CDN URLs)
+  for (const instance of INVIDIOUS_INSTANCES) {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 10000);
+
+      const res = await fetch(
+        `${instance}/api/v1/videos/${videoId}?fields=title,lengthSeconds,adaptiveFormats`,
+        {
+          headers: {
+            "User-Agent": BROWSER_UA,
+            Accept: "application/json",
+          },
+          signal: controller.signal,
+        }
+      );
+
+      clearTimeout(timeout);
+
+      if (!res.ok) {
+        errors.push(`Invidious ${instance}: HTTP ${res.status}`);
+        continue;
+      }
+
+      const data = await res.json();
+      const formats: any[] = data.adaptiveFormats || [];
+
+      // Pick the highest bitrate audio format
+      const best = formats
+        .filter(
+          (f: any) => f.type?.startsWith("audio/") && f.url && f.url.length > 0
+        )
+        .sort(
+          (a: any, b: any) =>
+            (b.bitrate ? parseInt(b.bitrate) : 0) -
+            (a.bitrate ? parseInt(a.bitrate) : 0)
+        )[0];
+
+      if (best?.url) {
+        console.log(
+          `Audio stream found via Invidious (${instance}): ${best.type} @ ${best.bitrate}bps`
+        );
+        return {
+          streamUrl: best.url,
+          title: data.title || "audio",
+          duration: data.lengthSeconds || 0,
+        };
+      }
+
+      errors.push(`Invidious ${instance}: no audio formats in response`);
+    } catch (err: any) {
+      errors.push(
+        `Invidious ${instance}: ${err.name === "AbortError" ? "timeout" : err.message}`
+      );
+      continue;
+    }
+  }
+
+  // All services failed
+  console.error("All audio extraction services failed:", errors);
+  throw new Error(
+    "Could not extract audio stream. All services are currently unavailable. Please try again later."
+  );
 }
