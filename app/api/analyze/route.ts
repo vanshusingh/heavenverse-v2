@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import { extractVideoId, parseISO8601Duration } from "@/lib/youtube";
-
-const YOUTUBE_API_BASE = "https://www.googleapis.com/youtube/v3";
+import ytdl from "@distube/ytdl-core";
+import { extractVideoId } from "@/lib/youtube";
 
 export async function POST(req: Request) {
   try {
@@ -19,71 +18,58 @@ export async function POST(req: Request) {
       );
     }
 
-    const apiKey = process.env.YOUTUBE_API_KEY;
-    if (!apiKey) {
-      console.error("YOUTUBE_API_KEY environment variable is not set.");
-      return NextResponse.json(
-        { error: "Server configuration error: YouTube API key is missing." },
-        { status: 500 }
-      );
-    }
+    const canonicalUrl = `https://www.youtube.com/watch?v=${videoId}`;
 
-    // Fetch video metadata via YouTube Data API v3 (official, never blocked)
-    const apiUrl = `${YOUTUBE_API_BASE}/videos?part=snippet,contentDetails&id=${videoId}&key=${apiKey}`;
-    const apiRes = await fetch(apiUrl);
+    // Fetch video metadata via @distube/ytdl-core (pure Node.js, no binary needed)
+    const info = await ytdl.getInfo(canonicalUrl, {
+      requestOptions: {
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+          "Accept-Language": "en-US,en;q=0.9",
+          Accept:
+            "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        },
+      },
+    });
 
-    if (!apiRes.ok) {
-      const errorBody = await apiRes.text();
-      console.error("YouTube API error:", apiRes.status, errorBody);
+    const details = info.videoDetails;
 
-      if (apiRes.status === 403) {
-        return NextResponse.json(
-          { error: "YouTube API quota exceeded or API key is invalid. Please check your Google Cloud Console." },
-          { status: 500 }
-        );
-      }
-
-      return NextResponse.json(
-        { error: "Failed to fetch video metadata from YouTube API." },
-        { status: 500 }
-      );
-    }
-
-    const data = await apiRes.json();
-
-    if (!data.items || data.items.length === 0) {
-      return NextResponse.json(
-        { error: "Video not found. It may be private, deleted, or region-restricted." },
-        { status: 404 }
-      );
-    }
-
-    const video = data.items[0];
-    const snippet = video.snippet;
-    const contentDetails = video.contentDetails;
-
-    // Parse ISO 8601 duration (e.g., "PT4M13S") into seconds
-    const durationSeconds = parseISO8601Duration(contentDetails.duration);
-
-    // Pick the best available thumbnail (maxres > high > medium > default)
-    const thumbnails = snippet.thumbnails;
-    const thumbnail =
-      thumbnails.maxres?.url ||
-      thumbnails.high?.url ||
-      thumbnails.medium?.url ||
-      thumbnails.default?.url ||
-      "";
+    // Pick the best available thumbnail
+    const thumbnails = details.thumbnails || [];
+    const bestThumb =
+      thumbnails.length > 0
+        ? thumbnails.sort((a, b) => (b.width || 0) - (a.width || 0))[0].url
+        : "";
 
     return NextResponse.json({
-      title: snippet.title || "Unknown Title",
-      thumbnail,
-      duration: durationSeconds,
-      uploader: snippet.channelTitle || "Unknown Uploader",
+      title: details.title || "Unknown Title",
+      thumbnail: bestThumb,
+      duration: parseInt(details.lengthSeconds, 10) || 0,
+      uploader: details.author?.name || details.ownerChannelName || "Unknown Uploader",
     });
   } catch (error: any) {
     console.error("Analysis failed:", error);
+
+    let errorMessage = error.message || "Failed to analyze link";
+
+    // Parse common ytdl-core errors into friendly messages
+    if (errorMessage.includes("Sign in") || errorMessage.includes("bot")) {
+      errorMessage =
+        "YouTube is temporarily restricting requests. Please try again in a moment.";
+    } else if (
+      errorMessage.includes("private") ||
+      errorMessage.includes("unavailable")
+    ) {
+      errorMessage =
+        "This video is unavailable. It might be private, deleted, or restricted.";
+    } else if (errorMessage.includes("age")) {
+      errorMessage =
+        "This video is age-restricted and cannot be analyzed.";
+    }
+
     return NextResponse.json(
-      { error: error.message || "Failed to analyze link" },
+      { error: errorMessage },
       { status: 500 }
     );
   }

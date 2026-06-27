@@ -32,20 +32,6 @@ export function extractVideoId(url: string): string | null {
   return null;
 }
 
-/**
- * Parse YouTube Data API v3 ISO 8601 duration string into total seconds.
- * Example: "PT4M13S" → 253, "PT1H2M3S" → 3723, "PT30S" → 30
- */
-export function parseISO8601Duration(iso: string): number {
-  const match = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
-  if (!match) return 0;
-
-  const hours = parseInt(match[1] || "0", 10);
-  const minutes = parseInt(match[2] || "0", 10);
-  const seconds = parseInt(match[3] || "0", 10);
-
-  return hours * 3600 + minutes * 60 + seconds;
-}
 
 /**
  * Get the platform-aware downloads directory.

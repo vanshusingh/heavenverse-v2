@@ -299,7 +299,7 @@ export default function AdminDashboard() {
                   {[
                     { name: "Next.js Dev Server", status: "Running", icon: Server, ok: true },
                     { name: "IndexedDB Storage", status: "Connected", icon: Database, ok: true },
-                    { name: "yt-dlp Engine", status: "Ready", icon: Download, ok: true },
+                    { name: "Audio Engine", status: "Ready", icon: Download, ok: true },
                     { name: "FFmpeg Transcoder", status: "Idle", icon: Zap, ok: true },
                     { name: "Open-Meteo Weather", status: "Online", icon: Globe, ok: true },
                     { name: "WebSocket (future)", status: "Not Configured", icon: Wifi, ok: false },

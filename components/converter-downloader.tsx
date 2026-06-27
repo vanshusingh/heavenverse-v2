@@ -103,7 +103,7 @@ export function ConverterDownloader({ onAddSong, onPreviewSong }: ConverterDownl
     setProgress(20)
     
     try {
-      setStatusText("Querying local yt-dlp metadata extractor...")
+      setStatusText("Extracting video metadata...")
       setProgress(50)
 
       const res = await fetch("/api/analyze", {
@@ -155,7 +155,7 @@ export function ConverterDownloader({ onAddSong, onPreviewSong }: ConverterDownl
       setStatusText("");
     } catch (err: any) {
       console.error(err);
-      alert(err.message || "Failed to parse metadata. Verify the URL and check if yt-dlp.exe is available.");
+      alert(err.message || "Failed to parse metadata. Please verify the URL and try again.");
       setStep(1);
       setProgress(0);
       setStatusText("");
@@ -175,7 +175,7 @@ export function ConverterDownloader({ onAddSong, onPreviewSong }: ConverterDownl
     if (!analyzedSong) return
     setStep(3) // Step 3: Download Audio starts
     setProgress(0)
-    setStatusText("yt-dlp initiating audio stream download...")
+    setStatusText("Initiating audio stream download...")
 
     // Simulate progress increments during backend conversion
     const progressInterval = setInterval(() => {
@@ -190,7 +190,7 @@ export function ConverterDownloader({ onAddSong, onPreviewSong }: ConverterDownl
         // Map progress boundaries to numeric pipeline steps
         if (nextProgress < 50) {
           setStep(3) // Step 3: Download Audio
-          setStatusText("yt-dlp downloading audio stream chunks...")
+          setStatusText("Downloading audio stream chunks...")
         } else if (nextProgress >= 50 && nextProgress < 85) {
           setStep(4) // Step 4: Convert MP3 (FFmpeg transcoding)
           setStatusText(`Invoking FFmpeg to transcode stream to ${quality}kbps MP3...`)
@@ -283,7 +283,7 @@ export function ConverterDownloader({ onAddSong, onPreviewSong }: ConverterDownl
       {/* Title */}
       <div className="text-black">
         <h1 className="text-2xl font-bold tracking-wide">Converter & Downloader</h1>
-        <p className="text-black/50 text-xs mt-1">Convert YouTube links using yt-dlp & FFmpeg to MP3 format.</p>
+        <p className="text-black/50 text-xs mt-1">Convert YouTube links to high-quality MP3 format.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -475,7 +475,7 @@ export function ConverterDownloader({ onAddSong, onPreviewSong }: ConverterDownl
             <div className="bg-white border-2 border-dashed border-black/25 bg-[#d5d4d9] rounded-2xl p-5 flex flex-col justify-center items-center py-16 h-full text-center">
               <span className="text-xs text-black/60 font-bold uppercase">Ready to Convert</span>
               <span className="text-[10px] text-black/50 mt-1 max-w-[200px] leading-relaxed font-bold">
-                Paste a YouTube track link on the left to start yt-dlp & FFmpeg conversion.
+                Paste a YouTube track link on the left to start the conversion.
               </span>
             </div>
           )}
