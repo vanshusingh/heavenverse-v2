@@ -126,10 +126,10 @@ export function ConverterDownloader({ onAddSong, onPreviewSong }: ConverterDownl
       setProgress(85);
       setStatusText("Parsing stream properties and thumbnail...");
 
-      // Convert duration in seconds to M:SS layout
-      const minutes = Math.floor(data.duration / 60);
-      const seconds = Math.floor(data.duration % 60);
-      const durationStr = `${minutes}:${seconds.toString().padStart(2, "0")}`;
+      // Convert duration in seconds to M:SS layout (oEmbed may return 0)
+      const durationStr = data.duration > 0
+        ? `${Math.floor(data.duration / 60)}:${Math.floor(data.duration % 60).toString().padStart(2, "0")}`
+        : "—";
 
       // Normalize thumbnail URL if it starts with //
       let thumbUrl = data.thumbnail || "";

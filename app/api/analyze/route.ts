@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import ytdl from "@distube/ytdl-core";
 import { extractVideoId } from "@/lib/youtube";
 
 export async function POST(req: Request) {
@@ -20,56 +19,43 @@ export async function POST(req: Request) {
 
     const canonicalUrl = `https://www.youtube.com/watch?v=${videoId}`;
 
-    // Fetch video metadata via @distube/ytdl-core (pure Node.js, no binary needed)
-    const info = await ytdl.getInfo(canonicalUrl, {
-      requestOptions: {
-        headers: {
-          "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-          "Accept-Language": "en-US,en;q=0.9",
-          Accept:
-            "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        },
-      },
-    });
+    // Fetch metadata via YouTube's free oEmbed API (no key needed, never blocked)
+    const oembedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent(canonicalUrl)}&format=json`;
+    const res = await fetch(oembedUrl);
 
-    const details = info.videoDetails;
+    if (!res.ok) {
+      if (res.status === 401 || res.status === 403) {
+        return NextResponse.json(
+          { error: "This video is private or embedding is disabled." },
+          { status: 404 }
+        );
+      }
+      if (res.status === 404) {
+        return NextResponse.json(
+          { error: "Video not found. It may be deleted or region-restricted." },
+          { status: 404 }
+        );
+      }
+      return NextResponse.json(
+        { error: "Failed to fetch video metadata." },
+        { status: 500 }
+      );
+    }
 
-    // Pick the best available thumbnail
-    const thumbnails = details.thumbnails || [];
-    const bestThumb =
-      thumbnails.length > 0
-        ? thumbnails.sort((a, b) => (b.width || 0) - (a.width || 0))[0].url
-        : "";
+    const data = await res.json();
 
+    // oEmbed returns: title, author_name, thumbnail_url (among others)
+    // Duration is not available via oEmbed — we pass 0 and resolve it during conversion
     return NextResponse.json({
-      title: details.title || "Unknown Title",
-      thumbnail: bestThumb,
-      duration: parseInt(details.lengthSeconds, 10) || 0,
-      uploader: details.author?.name || details.ownerChannelName || "Unknown Uploader",
+      title: data.title || "Unknown Title",
+      thumbnail: data.thumbnail_url || `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+      duration: 0,
+      uploader: data.author_name || "Unknown Uploader",
     });
   } catch (error: any) {
     console.error("Analysis failed:", error);
-
-    let errorMessage = error.message || "Failed to analyze link";
-
-    // Parse common ytdl-core errors into friendly messages
-    if (errorMessage.includes("Sign in") || errorMessage.includes("bot")) {
-      errorMessage =
-        "YouTube is temporarily restricting requests. Please try again in a moment.";
-    } else if (
-      errorMessage.includes("private") ||
-      errorMessage.includes("unavailable")
-    ) {
-      errorMessage =
-        "This video is unavailable. It might be private, deleted, or restricted.";
-    } else if (errorMessage.includes("age")) {
-      errorMessage =
-        "This video is age-restricted and cannot be analyzed.";
-    }
-
     return NextResponse.json(
-      { error: errorMessage },
+      { error: error.message || "Failed to analyze link" },
       { status: 500 }
     );
   }
