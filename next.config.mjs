@@ -14,12 +14,11 @@ const nextConfig = {
   },
   transpilePackages: ["gsap"],
   outputFileTracingRoot: __dirname,
-  serverExternalPackages: ["ffmpeg-static", "yt-dlp-exec"],
+  serverExternalPackages: ["ffmpeg-static"],
   outputFileTracingExcludes: {
     '*': [
       '**/.next/cache/**/*',
       '**/.git/**/*',
-      '**/yt-dlp.exe',
     ],
   },
 }

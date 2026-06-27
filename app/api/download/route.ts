@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import path from "path";
 import fs from "fs";
 import { cleanOldDownloads } from "@/lib/cleanup";
+import { getDownloadsDir } from "@/lib/youtube";
 
 export async function GET(req: Request) {
   try {
@@ -17,7 +18,7 @@ export async function GET(req: Request) {
 
     // Sanitize file parameter to prevent directory traversal
     const safeFile = path.basename(file);
-    const filePath = path.join(process.cwd(), "downloads", safeFile);
+    const filePath = path.join(getDownloadsDir(), safeFile);
 
     if (!fs.existsSync(filePath)) {
       return new Response("File not found", { status: 404 });

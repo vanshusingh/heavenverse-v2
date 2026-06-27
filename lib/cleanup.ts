@@ -1,9 +1,10 @@
 import fs from "fs";
 import path from "path";
+import { getDownloadsDir } from "@/lib/youtube";
 
 export function cleanOldDownloads() {
   try {
-    const downloadsDir = path.join(process.cwd(), "downloads");
+    const downloadsDir = getDownloadsDir();
     if (!fs.existsSync(downloadsDir)) return;
 
     const files = fs.readdirSync(downloadsDir);
@@ -12,6 +13,8 @@ export function cleanOldDownloads() {
 
     for (const file of files) {
       if (file === ".gitkeep") continue;
+      // Only clean up audio files we created (mp3, webm, m4a, opus, ogg, aac)
+      if (!/\.(mp3|webm|m4a|opus|ogg|aac)$/i.test(file)) continue;
       
       const filePath = path.join(downloadsDir, file);
       try {
