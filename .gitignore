@@ -28,3 +28,4 @@ next-env.d.ts
 
 # local downloads
 /downloads
+yt-dlp.exe.old

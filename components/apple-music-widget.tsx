@@ -69,7 +69,7 @@ export function AppleMusicWidget({
       {/* Album Art (HV Logo) with Waveform Overlay */}
       <div className="relative group w-full aspect-square rounded-2xl overflow-hidden bg-white flex items-center justify-center p-8">
         <Image
-          src="/images/hv-logo.png"
+          src="/images/hv-logo.svg"
           alt="Heavenverse Logo"
           width={292}
           height={292}

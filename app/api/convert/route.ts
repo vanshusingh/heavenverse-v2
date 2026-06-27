@@ -41,7 +41,6 @@ export async function POST(req: Request) {
       noWarnings: true,
       noPlaylist: true,
 
-      extractorArgs: "youtube:player_client=default,-android_sdkless",
       jsRuntimes: `node:${process.execPath}`,
     })) as any;
 
@@ -74,7 +73,6 @@ export async function POST(req: Request) {
       format: "bestaudio",
       noPlaylist: true,
       output: downloadTemplate,
-      extractorArgs: "youtube:player_client=default,-android_sdkless",
       jsRuntimes: `node:${process.execPath}`,
     }));
 

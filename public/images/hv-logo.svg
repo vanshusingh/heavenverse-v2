@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 36" fill="currentColor">
+  <g transform="skewX(-22) translate(15, 3)">
+    <!-- H -->
+    <rect x="0" y="0" width="15" height="30" />
+    <rect x="25" y="0" width="15" height="30" />
+    <rect x="15" y="11.5" width="10" height="7" />
+
+    <!-- V -->
+    <path d="M 45 0 L 57.5 30 H 72.5 L 85 0 H 70 L 65 12 L 60 0 Z" />
+  </g>
+</svg>
