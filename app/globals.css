@@ -225,3 +225,26 @@ input[type="range"]:hover::-moz-range-thumb {
 .crt-flicker {
   animation: crt-flicker 0.15s infinite;
 }
+
+/* Retro Dark Mode Overrides */
+.dark .bg-\[\#f9f8fa\] { background-color: #0f172a !important; }
+.dark .bg-white { background-color: #1e293b !important; }
+.dark .text-black { color: #f8fafc !important; }
+.dark .text-black\/25 { color: rgba(248, 250, 252, 0.25) !important; }
+.dark .text-black\/40 { color: rgba(248, 250, 252, 0.4) !important; }
+.dark .text-black\/45 { color: rgba(248, 250, 252, 0.45) !important; }
+.dark .text-black\/50 { color: rgba(248, 250, 252, 0.5) !important; }
+.dark .text-black\/60 { color: rgba(248, 250, 252, 0.6) !important; }
+.dark .text-black\/70 { color: rgba(248, 250, 252, 0.7) !important; }
+.dark .text-black\/75 { color: rgba(248, 250, 252, 0.75) !important; }
+.dark .border-black { border-color: #334155 !important; }
+.dark .border-black\/25 { border-color: rgba(255, 255, 255, 0.25) !important; }
+.dark .border-black\/35 { border-color: rgba(255, 255, 255, 0.35) !important; }
+.dark .shadow-\[3px_3px_0px_black\] { box-shadow: 3px 3px 0px #020617 !important; }
+.dark .shadow-\[4px_4px_0px_rgba\(0\,0\,0\,1\)\] { box-shadow: 4px 4px 0px #020617 !important; }
+.dark .shadow-\[2px_2px_0px_black\] { box-shadow: 2px 2px 0px #020617 !important; }
+.dark .retro-grid { background-color: #020617 !important; }
+.dark .hover\:bg-black\/5:hover { background-color: rgba(255,255,255,0.05) !important; }
+.dark .hover\:text-black:hover { color: #ffffff !important; }
+.dark .bg-black\/5 { background-color: rgba(255,255,255,0.05) !important; }
+.dark .border-\[\#f9f8fa\] { border-color: #0f172a !important; }
