@@ -39,7 +39,9 @@ import {
   ArrowDown,
   Shield,
   Maximize2,
-  Minimize2
+  Minimize2,
+  Sun,
+  Moon
 } from "lucide-react"
 
 import {
@@ -1272,7 +1274,7 @@ export default function PlayerPage() {
           </div>
 
           {/* Quick Exit/Landing Link */}
-          <div className="px-3">
+          <div className="px-3 flex flex-col gap-1">
             <Link
               href="/"
               className="flex items-center justify-center lg:justify-start gap-3.5 px-4 py-3 rounded-xl text-xs font-retro font-bold uppercase text-black/50 hover:text-black hover:bg-black/5 transition-all border-2 border-transparent"
@@ -1280,6 +1282,15 @@ export default function PlayerPage() {
               <Sliders className="w-4.5 h-4.5" />
               <span className="hidden lg:block">Exit Player</span>
             </Link>
+
+            {/* Dark Mode Toggle */}
+            <button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="w-full flex items-center justify-center lg:justify-start gap-3.5 px-4 py-3 rounded-xl text-xs font-retro font-bold uppercase text-black/50 hover:text-black hover:bg-black/5 transition-all border-2 border-transparent cursor-pointer"
+            >
+              {theme === "dark" ? <Sun className="w-4.5 h-4.5" /> : <Moon className="w-4.5 h-4.5" />}
+              <span className="hidden lg:block">{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
+            </button>
           </div>
         </aside>
 

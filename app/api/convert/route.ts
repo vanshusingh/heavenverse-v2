@@ -3,16 +3,14 @@ import path from "path";
 import fs from "fs";
 import ffmpegPath from "ffmpeg-static";
 import { spawn } from "child_process";
-import { Readable } from "stream";
+import ytdl from "@distube/ytdl-core";
 import { cleanOldDownloads } from "@/lib/cleanup";
-import { extractVideoId, getDownloadsDir, getAudioStreamUrl } from "@/lib/youtube";
+import { extractVideoId, getDownloadsDir } from "@/lib/youtube";
 
-// Increase max duration for serverless (Vercel Pro: 60s)
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
   try {
-    // Run lazy cleanup to sweep old downloaded files
     cleanOldDownloads();
 
     const { url, quality } = await req.json();
@@ -29,17 +27,28 @@ export async function POST(req: Request) {
       );
     }
 
+    const canonicalUrl = `https://www.youtube.com/watch?v=${videoId}`;
     const outputDir = getDownloadsDir();
 
-    // Get audio stream URL via Piped/Invidious (bypasses YouTube bot detection)
-    console.log("Fetching audio stream URL for video:", videoId);
-    const { streamUrl, title } = await getAudioStreamUrl(videoId);
+    console.log("Fetching audio stream for video:", canonicalUrl);
 
-    const safeTitle = (title || "audio").replace(/[\\/:*?"<>|]/g, "_");
+    // Fetch video info via ytdl-core
+    const info = await ytdl.getInfo(canonicalUrl, {
+      requestOptions: {
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+          "Accept-Language": "en-US,en;q=0.9",
+        },
+      },
+    });
+
+    const title = info.videoDetails.title || "audio";
+    const safeTitle = title.replace(/[\\/:*?"<>|]/g, "_");
     const outputFilename = `${safeTitle}.mp3`;
     const finalMp3Path = path.join(outputDir, outputFilename);
 
-    // If the file already exists (cached), return immediately
+    // Cached check
     if (fs.existsSync(finalMp3Path)) {
       console.log("Cached MP3 found, returning immediately:", outputFilename);
       return NextResponse.json({
@@ -48,7 +57,6 @@ export async function POST(req: Request) {
       });
     }
 
-    // Resolve ffmpeg path safely
     let resolvedFfmpegPath = ffmpegPath;
     if (resolvedFfmpegPath && !fs.existsSync(resolvedFfmpegPath)) {
       const fallbackPath = path.join(
@@ -68,7 +76,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // Parse audio quality (default 320kbps)
     const parsedQuality = quality
       ? isNaN(Number(quality))
         ? 320
@@ -79,40 +86,24 @@ export async function POST(req: Request) {
       `Downloading audio stream and transcoding to ${parsedQuality}kbps MP3...`
     );
 
-    // Download the audio stream from the proxied URL
-    const streamRes = await fetch(streamUrl, {
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+    // Create readable stream of the best audio format
+    const audioStream = ytdl(canonicalUrl, {
+      quality: "highestaudio",
+      filter: "audioonly",
+      requestOptions: {
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+        },
       },
     });
 
-    if (!streamRes.ok || !streamRes.body) {
-      throw new Error(
-        `Failed to download audio stream: HTTP ${streamRes.status}`
-      );
-    }
-
-    // Convert Web ReadableStream to Node.js Readable stream
-    const reader = streamRes.body.getReader();
-    const nodeStream = new Readable({
-      async read() {
-        const { done, value } = await reader.read();
-        if (done) {
-          this.push(null);
-        } else {
-          this.push(Buffer.from(value));
-        }
-      },
-    });
-
-    // Pipe the downloaded audio stream through ffmpeg for MP3 transcoding
     await new Promise<void>((resolve, reject) => {
       const ffmpegProcess = spawn(resolvedFfmpegPath!, [
         "-y",
         "-i",
-        "pipe:0", // Read from stdin
-        "-vn", // No video
+        "pipe:0",
+        "-vn",
         "-ab",
         `${parsedQuality}k`,
         "-f",
@@ -120,15 +111,14 @@ export async function POST(req: Request) {
         finalMp3Path,
       ]);
 
-      // Pipe the audio stream into ffmpeg's stdin
-      nodeStream.pipe(ffmpegProcess.stdin);
+      audioStream.pipe(ffmpegProcess.stdin);
 
       let ffmpegError = "";
       ffmpegProcess.stderr.on("data", (data: Buffer) => {
         ffmpegError += data.toString();
       });
 
-      nodeStream.on("error", (err: Error) => {
+      audioStream.on("error", (err: Error) => {
         console.error("Stream download error:", err.message);
         ffmpegProcess.kill("SIGTERM");
         reject(new Error(`Audio download failed: ${err.message}`));
@@ -154,7 +144,6 @@ export async function POST(req: Request) {
       });
     });
 
-    // Verify the output file was created
     if (!fs.existsSync(finalMp3Path)) {
       throw new Error("Conversion completed but output file was not found.");
     }
@@ -169,22 +158,9 @@ export async function POST(req: Request) {
     console.error("Conversion failed:", err);
     let errorMessage = err.message || "Conversion failed";
 
-    // Parse common errors into friendly messages
-    if (errorMessage.includes("Video unavailable")) {
+    if (errorMessage.includes("Video unavailable") || errorMessage.includes("Sign in")) {
       errorMessage =
-        "This video is unavailable. It might be private, deleted, or restricted by the owner.";
-    } else if (
-      errorMessage.includes("age") &&
-      errorMessage.includes("restricted")
-    ) {
-      errorMessage =
-        "This video is age-restricted and cannot be downloaded.";
-    } else if (
-      errorMessage.includes("geo") ||
-      errorMessage.includes("geographic")
-    ) {
-      errorMessage =
-        "This video is geographically restricted or blocked in your region.";
+        "YouTube bot detection blocked the request. Please try again later.";
     }
 
     return NextResponse.json({ error: errorMessage }, { status: 500 });
