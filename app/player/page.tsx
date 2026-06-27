@@ -1215,13 +1215,13 @@ export default function PlayerPage() {
 
   return (
     <div
-      className="min-h-screen max-h-screen retro-grid flex flex-col relative text-black select-none overflow-hidden font-sans"
+      className="min-h-screen max-h-screen retro-grid flex flex-col relative text-black dark:text-slate-100 select-none overflow-hidden font-sans"
     >
       {/* Main Content Area */}
       <div className="z-10 flex-1 flex overflow-hidden">
         
         {/* Left Navigation Sidebar */}
-        <aside className="w-16 lg:w-60 bg-[#e2e1e6] border-r-4 border-black flex flex-col justify-between py-6 text-black font-retro">
+        <aside className="w-16 lg:w-60 bg-[#e2e1e6] dark:bg-[#020617] border-r-4 border-black dark:border-[#334155] flex flex-col justify-between py-6 text-black dark:text-slate-100 font-retro">
           <div className="flex flex-col gap-8">
             
             {/* Logo */}
@@ -1239,7 +1239,7 @@ export default function PlayerPage() {
                 height={18}
                 className="object-contain shrink-0"
               />
-              <span className="text-[11px] font-retro font-bold uppercase tracking-[0.15em] hidden lg:block text-black">
+              <span className="text-[11px] font-retro font-bold uppercase tracking-[0.15em] hidden lg:block text-black dark:text-slate-100">
                 Verse 2 Player
               </span>
             </div>
@@ -1262,8 +1262,8 @@ export default function PlayerPage() {
                   }}
                   className={`flex items-center gap-3.5 px-4 py-3 rounded-xl text-xs font-retro font-bold uppercase transition-all cursor-pointer border-2 ${
                     activeTab === tab.id
-                      ? "bg-[#4a689d] text-white border-black shadow-[2px_2px_0px_black]"
-                      : "text-black border-transparent hover:bg-black/5"
+                      ? "bg-[#4a689d] text-white border-black dark:border-[#334155] shadow-[2px_2px_0px_black]"
+                      : "text-black dark:text-slate-100 border-transparent hover:bg-black/5"
                   }`}
                 >
                   {tab.icon}
@@ -1277,7 +1277,7 @@ export default function PlayerPage() {
           <div className="px-3 flex flex-col gap-1">
             <Link
               href="/"
-              className="flex items-center justify-center lg:justify-start gap-3.5 px-4 py-3 rounded-xl text-xs font-retro font-bold uppercase text-black/50 hover:text-black hover:bg-black/5 transition-all border-2 border-transparent"
+              className="flex items-center justify-center lg:justify-start gap-3.5 px-4 py-3 rounded-xl text-xs font-retro font-bold uppercase text-black/50 hover:text-black dark:text-slate-100 hover:bg-black/5 transition-all border-2 border-transparent"
             >
               <Sliders className="w-4.5 h-4.5" />
               <span className="hidden lg:block">Exit Player</span>
@@ -1286,7 +1286,7 @@ export default function PlayerPage() {
             {/* Dark Mode Toggle */}
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="w-full flex items-center justify-center lg:justify-start gap-3.5 px-4 py-3 rounded-xl text-xs font-retro font-bold uppercase text-black/50 hover:text-black hover:bg-black/5 transition-all border-2 border-transparent cursor-pointer"
+              className="w-full flex items-center justify-center lg:justify-start gap-3.5 px-4 py-3 rounded-xl text-xs font-retro font-bold uppercase text-black/50 hover:text-black dark:text-slate-100 hover:bg-black/5 transition-all border-2 border-transparent cursor-pointer"
             >
               {theme === "dark" ? <Sun className="w-4.5 h-4.5" /> : <Moon className="w-4.5 h-4.5" />}
               <span className="hidden lg:block">{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
@@ -1314,7 +1314,7 @@ export default function PlayerPage() {
                     <div className="flex-1 flex flex-col gap-6 w-full">
                       
                       {/* Greeting Header */}
-                      <div className="bg-[#f9f8fa] border-2 border-black shadow-[3px_3px_0px_black] rounded-3xl p-6 flex flex-col justify-center text-black font-retro">
+                      <div className="bg-[#f9f8fa] border-2 border-black dark:border-[#334155] shadow-[3px_3px_0px_black] rounded-3xl p-6 flex flex-col justify-center text-black dark:text-slate-100 font-retro">
                         <h1 className="text-xl lg:text-2xl font-bold tracking-wide">
                           {getGreeting()}, Listener!
                         </h1>
@@ -1324,13 +1324,13 @@ export default function PlayerPage() {
                       </div>
 
                       {/* Recently Played Songs Section */}
-                      <div className="bg-[#f9f8fa] border-2 border-black shadow-[3px_3px_0px_black] rounded-3xl p-6 flex flex-col gap-4 text-black font-retro">
+                      <div className="bg-[#f9f8fa] border-2 border-black dark:border-[#334155] shadow-[3px_3px_0px_black] rounded-3xl p-6 flex flex-col gap-4 text-black dark:text-slate-100 font-retro">
                         <div className="flex justify-between items-center">
                           <h2 className="text-sm font-bold uppercase tracking-wider text-black/70">Recently Played</h2>
                           {recentlyPlayedTracks.length > 0 && (
                             <button
                               onClick={clearRecentlyPlayed}
-                              className="text-[10px] text-black/40 hover:text-black transition-colors font-bold uppercase tracking-wide cursor-pointer"
+                              className="text-[10px] text-black/40 hover:text-black dark:text-slate-100 transition-colors font-bold uppercase tracking-wide cursor-pointer"
                             >
                               Clear
                             </button>
@@ -1360,15 +1360,15 @@ export default function PlayerPage() {
                                   {isPlaying && currentTrackId === track.id && (
                                     <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                                       <span className="flex gap-0.5 items-end justify-center w-4 h-4">
-                                        <span className="w-0.5 bg-white animate-bounce" style={{ animationDelay: "0.1s", height: "60%" }} />
-                                        <span className="w-0.5 bg-white animate-bounce" style={{ animationDelay: "0.3s", height: "90%" }} />
-                                        <span className="w-0.5 bg-white animate-bounce" style={{ animationDelay: "0.2s", height: "40%" }} />
+                                        <span className="w-0.5 bg-white dark:bg-[#1e293b] animate-bounce" style={{ animationDelay: "0.1s", height: "60%" }} />
+                                        <span className="w-0.5 bg-white dark:bg-[#1e293b] animate-bounce" style={{ animationDelay: "0.3s", height: "90%" }} />
+                                        <span className="w-0.5 bg-white dark:bg-[#1e293b] animate-bounce" style={{ animationDelay: "0.2s", height: "40%" }} />
                                       </span>
                                     </div>
                                   )}
                                 </div>
                                 <div className="flex flex-col min-w-0">
-                                  <span className="text-xs font-bold text-black truncate group-hover:text-[#4a689d] transition-colors">
+                                  <span className="text-xs font-bold text-black dark:text-slate-100 truncate group-hover:text-[#4a689d] transition-colors">
                                     {track.title}
                                   </span>
                                   <span className="text-[10px] text-black/50 truncate mt-0.5">{track.artist}</span>
@@ -1384,12 +1384,12 @@ export default function PlayerPage() {
                       </div>
 
                       {/* Local Storage Widget */}
-                      <div className="bg-[#f9f8fa] border-2 border-black shadow-[3px_3px_0px_black] rounded-3xl p-6 flex flex-col gap-4 text-black font-retro">
+                      <div className="bg-[#f9f8fa] border-2 border-black dark:border-[#334155] shadow-[3px_3px_0px_black] rounded-3xl p-6 flex flex-col gap-4 text-black dark:text-slate-100 font-retro">
                         <div className="flex justify-between items-center">
                           <h2 className="text-sm font-bold uppercase tracking-wider text-black/70">Local Storage</h2>
                           <button
                             onClick={updateStorageEstimate}
-                            className="text-[10px] text-black/45 hover:text-black transition-colors font-bold uppercase tracking-wide cursor-pointer flex items-center gap-1"
+                            className="text-[10px] text-black/45 hover:text-black dark:text-slate-100 transition-colors font-bold uppercase tracking-wide cursor-pointer flex items-center gap-1"
                           >
                             Refresh
                           </button>
@@ -1431,14 +1431,14 @@ export default function PlayerPage() {
               {/* Library Tab */}
               {activeTab === "library" && (
                 <div className="flex flex-col gap-6 animate-fade-in">
-                  <div className="flex justify-between items-center text-black font-retro">
+                  <div className="flex justify-between items-center text-black dark:text-slate-100 font-retro">
                     <div>
                       <h1 className="text-xl lg:text-2xl font-bold tracking-wide">Your Library</h1>
                       <p className="text-black/50 text-[11px] mt-0.5">Manage local tracks stored inside your browser sandbox.</p>
                     </div>
                     <button
                       onClick={handleSelectFiles}
-                      className="bg-white border-2 border-black hover:bg-zinc-100 text-black text-[11px] font-bold px-4 py-2 rounded-xl shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer flex items-center gap-1.5"
+                      className="bg-white dark:bg-[#1e293b] border-2 border-black dark:border-[#334155] hover:bg-zinc-100 text-black dark:text-slate-100 text-[11px] font-bold px-4 py-2 rounded-xl shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer flex items-center gap-1.5"
                     >
                       <FolderUp className="w-3.5 h-3.5" />
                       Import Audio
@@ -1453,13 +1453,13 @@ export default function PlayerPage() {
                     onClick={handleSelectFiles}
                     className={`border-2 border-dashed rounded-2xl p-6 lg:p-10 flex flex-col items-center justify-center gap-2.5 cursor-pointer transition-all duration-300 ${
                       isDragging
-                        ? "border-black bg-[#c2c0c5] scale-[1.01]"
-                        : "border-black/30 bg-[#d5d4d9] hover:bg-[#c2c0c5] hover:border-black"
+                        ? "border-black dark:border-[#334155] bg-[#c2c0c5] scale-[1.01]"
+                        : "border-black/30 bg-[#d5d4d9] hover:bg-[#c2c0c5] hover:border-black dark:border-[#334155]"
                     }`}
                   >
                     <FolderUp className="w-8 h-8 text-black/50" />
                     <div className="text-center">
-                      <span className="text-xs font-bold text-black block">
+                      <span className="text-xs font-bold text-black dark:text-slate-100 block">
                         {uploadStatus ? uploadStatus : "Drag and drop music files here"}
                       </span>
                       <span className="text-[10px] text-black/50 block mt-0.5 font-bold">
@@ -1469,7 +1469,7 @@ export default function PlayerPage() {
                   </div>
 
                   {/* Search and Sort controls */}
-                  <div className="flex flex-col sm:flex-row gap-3 items-center justify-between bg-[#f9f8fa] border-2 border-black rounded-2xl p-4 shadow-[3px_3px_0px_black] text-black font-retro">
+                  <div className="flex flex-col sm:flex-row gap-3 items-center justify-between bg-[#f9f8fa] border-2 border-black dark:border-[#334155] rounded-2xl p-4 shadow-[3px_3px_0px_black] text-black dark:text-slate-100 font-retro">
                     <div className="w-full sm:max-w-xs relative">
                       <Search className="absolute left-3.5 top-2.5 w-3.5 h-3.5 text-black/40" />
                       <input
@@ -1477,7 +1477,7 @@ export default function PlayerPage() {
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Search songs or artists..."
-                        className="w-full bg-[#d5d4d9] border-2 border-black rounded-xl pl-9.5 pr-4 py-2 text-xs text-black placeholder-black/45 focus:outline-none focus:bg-[#c2c0c5] transition-all"
+                        className="w-full bg-[#d5d4d9] border-2 border-black dark:border-[#334155] rounded-xl pl-9.5 pr-4 py-2 text-xs text-black dark:text-slate-100 placeholder-black/45 focus:outline-none focus:bg-[#c2c0c5] transition-all"
                       />
                     </div>
 
@@ -1488,8 +1488,8 @@ export default function PlayerPage() {
                           onClick={() => setSortBy(opt)}
                           className={`px-3 py-1.5 text-[10px] font-bold rounded-lg uppercase tracking-wider transition-all cursor-pointer border-2 ${
                             sortBy === opt
-                              ? "bg-[#4a689d] text-white border-black"
-                              : "bg-white text-black border-transparent hover:bg-black/5"
+                              ? "bg-[#4a689d] text-white border-black dark:border-[#334155]"
+                              : "bg-white dark:bg-[#1e293b] text-black dark:text-slate-100 border-transparent hover:bg-black/5"
                           }`}
                         >
                           {opt}
@@ -1499,14 +1499,14 @@ export default function PlayerPage() {
                   </div>
 
                   {/* Tracks List */}
-                  <div className="space-y-1.5 text-black font-retro">
+                  <div className="space-y-1.5 text-black dark:text-slate-100 font-retro">
                     {filteredTracks.map((track) => (
                       <div
                         key={track.id}
                         onClick={() => selectAndPlayTrack(track.id, filteredTracks.map((t) => t.id))}
                         className={`flex items-center justify-between p-2.5 rounded-xl cursor-pointer transition-all border-2 ${
                           currentTrackId === track.id
-                            ? "bg-[#4a689d]/10 border-black shadow-[2px_2px_0px_black]"
+                            ? "bg-[#4a689d]/10 border-black dark:border-[#334155] shadow-[2px_2px_0px_black]"
                             : "hover:bg-black/5 border-transparent"
                         }`}
                       >
@@ -1524,9 +1524,9 @@ export default function PlayerPage() {
                               <div className={`w-full h-full bg-gradient-to-br ${getCoverGradient(track.coverArt)} flex items-center justify-center`}>
                                 {isPlaying && currentTrackId === track.id ? (
                                   <span className="flex gap-0.5 items-end justify-center w-4 h-4">
-                                    <span className="w-0.5 bg-white animate-bounce" style={{ animationDelay: "0.1s", height: "60%" }} />
-                                    <span className="w-0.5 bg-white animate-bounce" style={{ animationDelay: "0.3s", height: "90%" }} />
-                                    <span className="w-0.5 bg-white animate-bounce" style={{ animationDelay: "0.2s", height: "40%" }} />
+                                    <span className="w-0.5 bg-white dark:bg-[#1e293b] animate-bounce" style={{ animationDelay: "0.1s", height: "60%" }} />
+                                    <span className="w-0.5 bg-white dark:bg-[#1e293b] animate-bounce" style={{ animationDelay: "0.3s", height: "90%" }} />
+                                    <span className="w-0.5 bg-white dark:bg-[#1e293b] animate-bounce" style={{ animationDelay: "0.2s", height: "40%" }} />
                                   </span>
                                 ) : (
                                   <Music className="w-4 h-4 text-white/80" />
@@ -1545,14 +1545,14 @@ export default function PlayerPage() {
                                 type="text"
                                 value={editTitle}
                                 onChange={(e) => setEditTitle(e.target.value)}
-                                className="bg-[#d5d4d9] border-2 border-black rounded px-2.5 py-1 text-xs text-black placeholder-black/40 focus:outline-none min-w-0 flex-1 font-bold"
+                                className="bg-[#d5d4d9] border-2 border-black dark:border-[#334155] rounded px-2.5 py-1 text-xs text-black dark:text-slate-100 placeholder-black/40 focus:outline-none min-w-0 flex-1 font-bold"
                                 placeholder="Track Title"
                               />
                               <input
                                 type="text"
                                 value={editArtist}
                                 onChange={(e) => setEditArtist(e.target.value)}
-                                className="bg-[#d5d4d9] border-2 border-black rounded px-2.5 py-1 text-xs text-black placeholder-black/40 focus:outline-none min-w-0 flex-1"
+                                className="bg-[#d5d4d9] border-2 border-black dark:border-[#334155] rounded px-2.5 py-1 text-xs text-black dark:text-slate-100 placeholder-black/40 focus:outline-none min-w-0 flex-1"
                                 placeholder="Artist"
                               />
                               <button
@@ -1564,7 +1564,7 @@ export default function PlayerPage() {
                             </div>
                           ) : (
                             <div className="flex flex-col min-w-0">
-                              <span className={`text-xs font-bold truncate ${currentTrackId === track.id ? "text-[#4a689d]" : "text-black"}`}>
+                              <span className={`text-xs font-bold truncate ${currentTrackId === track.id ? "text-[#4a689d]" : "text-black dark:text-slate-100"}`}>
                                 {track.title}
                               </span>
                               <span className="text-[10px] text-black/50 truncate mt-0.5">
@@ -1586,7 +1586,7 @@ export default function PlayerPage() {
                           <button
                             onClick={() => toggleLikeTrack(track.id)}
                             className={`p-1.5 rounded-lg border-2 border-transparent hover:border-black/10 transition-all ${
-                              likedTrackIds.includes(track.id) ? "text-[#e63b3b]" : "text-black/40 hover:text-black"
+                              likedTrackIds.includes(track.id) ? "text-[#e63b3b]" : "text-black/40 hover:text-black dark:text-slate-100"
                             }`}
                           >
                             <Heart className="w-3.5 h-3.5" fill={likedTrackIds.includes(track.id) ? "currentColor" : "none"} />
@@ -1596,17 +1596,17 @@ export default function PlayerPage() {
                           <div className="relative">
                             <button
                               onClick={() => setActiveMenuTrackId(activeMenuTrackId === track.id ? null : track.id)}
-                              className="p-1.5 rounded-full text-black/40 hover:text-black hover:bg-black/5 transition-colors border border-transparent"
+                              className="p-1.5 rounded-full text-black/40 hover:text-black dark:text-slate-100 hover:bg-black/5 transition-colors border border-transparent"
                             >
                               <MoreVertical className="w-3.5 h-3.5" />
                             </button>
 
                             {/* Dropdown Menu */}
                             {activeMenuTrackId === track.id && (
-                              <div className="absolute right-0 mt-1.5 w-44 bg-[#f9f8fa] border-2 border-black rounded-xl shadow-[3px_3px_0px_black] z-20 py-1.5 animate-fade-in text-black font-retro">
+                              <div className="absolute right-0 mt-1.5 w-44 bg-[#f9f8fa] border-2 border-black dark:border-[#334155] rounded-xl shadow-[3px_3px_0px_black] z-20 py-1.5 animate-fade-in text-black dark:text-slate-100 font-retro">
                                 <button
                                   onClick={() => startRenameTrack(track)}
-                                  className="w-full text-left px-3.5 py-2 text-[10.5px] font-bold text-black hover:bg-black/5 transition-colors flex items-center gap-2"
+                                  className="w-full text-left px-3.5 py-2 text-[10.5px] font-bold text-black dark:text-slate-100 hover:bg-black/5 transition-colors flex items-center gap-2"
                                 >
                                   <Edit2 className="w-3.5 h-3.5" /> Rename Track
                                 </button>
@@ -1627,7 +1627,7 @@ export default function PlayerPage() {
                                       <button
                                         key={pl.id}
                                         onClick={() => addTrackToPlaylist(track.id, pl.id)}
-                                        className="w-full text-left px-3.5 py-1.5 text-[10px] font-bold text-black/60 hover:text-black hover:bg-black/5 transition-colors truncate"
+                                        className="w-full text-left px-3.5 py-1.5 text-[10px] font-bold text-black/60 hover:text-black dark:text-slate-100 hover:bg-black/5 transition-colors truncate"
                                       >
                                         + {pl.name}
                                       </button>
@@ -1652,19 +1652,19 @@ export default function PlayerPage() {
 
               {/* Playlists Tab */}
               {activeTab === "playlists" && (
-                <div className="flex flex-col gap-6 animate-fade-in text-black font-retro">
+                <div className="flex flex-col gap-6 animate-fade-in text-black dark:text-slate-100 font-retro">
                   
                   {!selectedPlaylistId ? (
                     // Default Playlists Grid list
                     <>
-                      <div className="flex justify-between items-center text-black font-retro">
+                      <div className="flex justify-between items-center text-black dark:text-slate-100 font-retro">
                         <div>
                           <h1 className="text-xl lg:text-2xl font-bold tracking-wide">Playlists</h1>
                           <p className="text-black/50 text-[11px] mt-0.5">Organize and group songs in local custom mix sheets.</p>
                         </div>
                         <button
                           onClick={handleCreatePlaylist}
-                          className="bg-white border-2 border-black hover:bg-zinc-100 text-black text-[11px] font-bold px-4 py-2 rounded-xl shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer flex items-center gap-1.5"
+                          className="bg-white dark:bg-[#1e293b] border-2 border-black dark:border-[#334155] hover:bg-zinc-100 text-black dark:text-slate-100 text-[11px] font-bold px-4 py-2 rounded-xl shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer flex items-center gap-1.5"
                         >
                           <Plus className="w-3.5 h-3.5" />
                           New Playlist
@@ -1676,10 +1676,10 @@ export default function PlayerPage() {
                           <div
                             key={pl.id}
                             onClick={() => setSelectedPlaylistId(pl.id)}
-                            className="bg-[#f9f8fa] border-2 border-black shadow-[3px_3px_0px_black] rounded-2xl p-5 hover:translate-y-[-2px] transition-transform cursor-pointer flex flex-col justify-between h-40 group"
+                            className="bg-[#f9f8fa] border-2 border-black dark:border-[#334155] shadow-[3px_3px_0px_black] rounded-2xl p-5 hover:translate-y-[-2px] transition-transform cursor-pointer flex flex-col justify-between h-40 group"
                           >
                             <div className="flex justify-between items-start">
-                              <div className="p-3 bg-[#e2e1e6] border-2 border-black rounded-xl">
+                              <div className="p-3 bg-[#e2e1e6] dark:bg-[#020617] border-2 border-black dark:border-[#334155] rounded-xl">
                                 <ListMusic className="w-5 h-5 text-[#4a689d] group-hover:scale-105 transition-transform" />
                               </div>
                               <button
@@ -1694,7 +1694,7 @@ export default function PlayerPage() {
                             </div>
 
                             <div>
-                              <h3 className="text-black font-bold text-sm truncate tracking-wide">{pl.name}</h3>
+                              <h3 className="text-black dark:text-slate-100 font-bold text-sm truncate tracking-wide">{pl.name}</h3>
                               <span className="text-[10px] text-black/55 mt-1 block font-bold">
                                 {pl.trackIds.length} {pl.trackIds.length === 1 ? "track" : "tracks"} • Stored Locally
                               </span>
@@ -1705,7 +1705,7 @@ export default function PlayerPage() {
                         {playlists.length === 0 && (
                           <div
                             onClick={handleCreatePlaylist}
-                            className="border-2 border-dashed border-black/25 bg-[#d5d4d9] rounded-2xl p-8 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-[#c2c0c5] hover:border-black transition-all text-center h-40 w-full"
+                            className="border-2 border-dashed border-black/25 bg-[#d5d4d9] rounded-2xl p-8 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-[#c2c0c5] hover:border-black dark:border-[#334155] transition-all text-center h-40 w-full"
                           >
                             <Plus className="w-7 h-7 text-black/40" />
                             <span className="text-xs font-bold text-black/60">Create your first playlist</span>
@@ -1715,12 +1715,12 @@ export default function PlayerPage() {
                     </>
                   ) : (
                     // Single Playlist Detail View
-                    <div className="flex flex-col gap-6 text-black font-retro">
+                    <div className="flex flex-col gap-6 text-black dark:text-slate-100 font-retro">
                       
                       {/* Back button */}
                       <button
                         onClick={() => setSelectedPlaylistId(null)}
-                        className="text-[11px] font-bold text-black/60 hover:text-black flex items-center gap-1.5 w-fit border border-transparent hover:border-black/10 px-2 py-1 rounded-lg"
+                        className="text-[11px] font-bold text-black/60 hover:text-black dark:text-slate-100 flex items-center gap-1.5 w-fit border border-transparent hover:border-black/10 px-2 py-1 rounded-lg"
                       >
                         ← Back to Playlists
                       </button>
@@ -1729,7 +1729,7 @@ export default function PlayerPage() {
                       {activePlaylist && (
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b-2 border-black/10 pb-6">
                           <div className="flex items-center gap-5">
-                            <div className="w-16 h-16 rounded-2xl bg-[#e2e1e6] border-2 border-black flex items-center justify-center text-[#4a689d] shadow-sm">
+                            <div className="w-16 h-16 rounded-2xl bg-[#e2e1e6] dark:bg-[#020617] border-2 border-black dark:border-[#334155] flex items-center justify-center text-[#4a689d] shadow-sm">
                               <ListMusic className="w-8 h-8" />
                             </div>
                             <div>
@@ -1744,14 +1744,14 @@ export default function PlayerPage() {
                             {activePlaylist.trackIds.length > 0 && (
                               <button
                                 onClick={() => selectAndPlayTrack(activePlaylist.trackIds[0], activePlaylist.trackIds)}
-                                className="bg-[#4a689d] text-white text-[11px] font-bold px-4 py-2 border-2 border-black rounded-xl transition-all shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none flex items-center gap-1.5 cursor-pointer"
+                                className="bg-[#4a689d] text-white text-[11px] font-bold px-4 py-2 border-2 border-black dark:border-[#334155] rounded-xl transition-all shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none flex items-center gap-1.5 cursor-pointer"
                               >
                                 <Play className="w-3.5 h-3.5 fill-current" /> Play Mix
                               </button>
                             )}
                             <button
                               onClick={() => handleDeletePlaylist(activePlaylist.id)}
-                              className="bg-[#e63b3b]/10 hover:bg-[#e63b3b]/20 border-2 border-black text-[#e63b3b] text-[11px] font-bold px-4 py-2 rounded-xl transition-all active:scale-[0.98] cursor-pointer"
+                              className="bg-[#e63b3b]/10 hover:bg-[#e63b3b]/20 border-2 border-black dark:border-[#334155] text-[#e63b3b] text-[11px] font-bold px-4 py-2 rounded-xl transition-all active:scale-[0.98] cursor-pointer"
                             >
                               Delete Playlist
                             </button>
@@ -1771,7 +1771,7 @@ export default function PlayerPage() {
                                 onClick={() => selectAndPlayTrack(track.id, activePlaylist.trackIds)}
                                 className={`flex items-center justify-between p-2.5 rounded-xl cursor-pointer transition-all border-2 ${
                                   currentTrackId === track.id
-                                    ? "bg-[#4a689d]/10 border-black shadow-[2px_2px_0px_black]"
+                                    ? "bg-[#4a689d]/10 border-black dark:border-[#334155] shadow-[2px_2px_0px_black]"
                                     : "hover:bg-black/5 border-transparent"
                                 }`}
                               >
@@ -1790,9 +1790,9 @@ export default function PlayerPage() {
                                       <div className={`w-full h-full bg-gradient-to-br ${getCoverGradient(track.coverArt)} flex items-center justify-center`}>
                                         {isPlaying && currentTrackId === track.id ? (
                                           <span className="flex gap-0.5 items-end justify-center w-3.5 h-3.5">
-                                            <span className="w-0.5 bg-white animate-bounce" style={{ animationDelay: "0.1s", height: "60%" }} />
-                                            <span className="w-0.5 bg-white animate-bounce" style={{ animationDelay: "0.3s", height: "90%" }} />
-                                            <span className="w-0.5 bg-white animate-bounce" style={{ animationDelay: "0.2s", height: "40%" }} />
+                                            <span className="w-0.5 bg-white dark:bg-[#1e293b] animate-bounce" style={{ animationDelay: "0.1s", height: "60%" }} />
+                                            <span className="w-0.5 bg-white dark:bg-[#1e293b] animate-bounce" style={{ animationDelay: "0.3s", height: "90%" }} />
+                                            <span className="w-0.5 bg-white dark:bg-[#1e293b] animate-bounce" style={{ animationDelay: "0.2s", height: "40%" }} />
                                           </span>
                                         ) : (
                                           <Music className="w-3.5 h-3.5 text-white/80" />
@@ -1802,7 +1802,7 @@ export default function PlayerPage() {
                                   </div>
 
                                   <div className="flex flex-col min-w-0">
-                                    <span className="text-xs font-bold text-black truncate">{track.title}</span>
+                                    <span className="text-xs font-bold text-black dark:text-slate-100 truncate">{track.title}</span>
                                     <span className="text-[10px] text-black/50 truncate mt-0.5">{track.artist}</span>
                                   </div>
                                 </div>
@@ -1818,14 +1818,14 @@ export default function PlayerPage() {
                                     <button
                                       disabled={idx === 0}
                                       onClick={() => movePlaylistTrack(activePlaylist.id, idx, "up")}
-                                      className="p-0.5 text-black/40 hover:text-black disabled:opacity-20 transition-colors cursor-pointer"
+                                      className="p-0.5 text-black/40 hover:text-black dark:text-slate-100 disabled:opacity-20 transition-colors cursor-pointer"
                                     >
                                       <ArrowUp className="w-3 h-3" />
                                     </button>
                                     <button
                                       disabled={idx === activePlaylist.trackIds.length - 1}
                                       onClick={() => movePlaylistTrack(activePlaylist.id, idx, "down")}
-                                      className="p-0.5 text-black/40 hover:text-black disabled:opacity-20 transition-colors cursor-pointer"
+                                      className="p-0.5 text-black/40 hover:text-black dark:text-slate-100 disabled:opacity-20 transition-colors cursor-pointer"
                                     >
                                       <ArrowDown className="w-3 h-3" />
                                     </button>
@@ -1848,7 +1848,7 @@ export default function PlayerPage() {
                               <span className="text-xs text-black/55 italic block mb-3 font-bold">This playlist is empty.</span>
                               <button
                                 onClick={() => setActiveTab("library")}
-                                className="bg-[#4a689d] text-white text-[10.5px] font-bold px-3 py-1.5 border-2 border-black rounded-lg hover:bg-indigo-600 transition-all cursor-pointer shadow-[1.5px_1.5px_0px_black] active:translate-y-0.5 active:shadow-none"
+                                className="bg-[#4a689d] text-white text-[10.5px] font-bold px-3 py-1.5 border-2 border-black dark:border-[#334155] rounded-lg hover:bg-indigo-600 transition-all cursor-pointer shadow-[1.5px_1.5px_0px_black] active:translate-y-0.5 active:shadow-none"
                               >
                                 Browse Library to Add Songs
                               </button>
@@ -1870,17 +1870,17 @@ export default function PlayerPage() {
 
               {/* Settings Tab */}
               {activeTab === "settings" && (
-                <div className="flex flex-col gap-6 animate-fade-in max-w-2xl text-black font-retro">
+                <div className="flex flex-col gap-6 animate-fade-in max-w-2xl text-black dark:text-slate-100 font-retro">
                   <div>
                     <h1 className="text-xl lg:text-2xl font-bold tracking-wide">Settings</h1>
                     <p className="text-black/50 text-[11px] mt-0.5">Customize your local listening preferences.</p>
                   </div>
 
-                  <div className="bg-[#f9f8fa] border-2 border-black rounded-2xl p-5 shadow-[3px_3px_0px_black] space-y-6">
+                  <div className="bg-[#f9f8fa] border-2 border-black dark:border-[#334155] rounded-2xl p-5 shadow-[3px_3px_0px_black] space-y-6">
                     {/* Autoplay toggle */}
                     <div className="flex justify-between items-center pb-4 border-b border-black/10">
                       <div>
-                        <h3 className="text-xs font-bold text-black tracking-wide">Autoplay Next</h3>
+                        <h3 className="text-xs font-bold text-black dark:text-slate-100 tracking-wide">Autoplay Next</h3>
                         <p className="text-[10px] text-black/50 mt-0.5">Automatically stream upcoming song list on track completion.</p>
                       </div>
                       <button
@@ -1889,11 +1889,11 @@ export default function PlayerPage() {
                           setAutoplay(nextVal)
                           localStorage.setItem("hv_autoplay", nextVal.toString())
                         }}
-                        className={`w-12 h-6 rounded-full p-1 transition-all border-2 border-black cursor-pointer ${
+                        className={`w-12 h-6 rounded-full p-1 transition-all border-2 border-black dark:border-[#334155] cursor-pointer ${
                           autoplay ? "bg-[#4a689d]" : "bg-[#d5d4d9]"
                         }`}
                       >
-                        <div className={`w-4 h-4 bg-white border border-black rounded-full shadow transition-transform ${
+                        <div className={`w-4 h-4 bg-white dark:bg-[#1e293b] border border-black dark:border-[#334155] rounded-full shadow transition-transform ${
                           autoplay ? "translate-x-5" : "translate-x-0"
                         }`} />
                       </button>
@@ -1902,7 +1902,7 @@ export default function PlayerPage() {
                     {/* Equalizer toggle */}
                     <div className="flex justify-between items-center pb-4 border-b border-black/10">
                       <div>
-                        <h3 className="text-xs font-bold text-black tracking-wide">Equalizer Visualizer</h3>
+                        <h3 className="text-xs font-bold text-black dark:text-slate-100 tracking-wide">Equalizer Visualizer</h3>
                         <p className="text-[10px] text-black/50 mt-0.5">Render dancing canvas frequency bars in the Right Panel.</p>
                       </div>
                       <button
@@ -1911,11 +1911,11 @@ export default function PlayerPage() {
                           setVisualizerOn(nextVal)
                           localStorage.setItem("hv_visualizer", nextVal.toString())
                         }}
-                        className={`w-12 h-6 rounded-full p-1 transition-all border-2 border-black cursor-pointer ${
+                        className={`w-12 h-6 rounded-full p-1 transition-all border-2 border-black dark:border-[#334155] cursor-pointer ${
                           visualizerOn ? "bg-[#4a689d]" : "bg-[#d5d4d9]"
                         }`}
                       >
-                        <div className={`w-4 h-4 bg-white border border-black rounded-full shadow transition-transform ${
+                        <div className={`w-4 h-4 bg-white dark:bg-[#1e293b] border border-black dark:border-[#334155] rounded-full shadow transition-transform ${
                           visualizerOn ? "translate-x-5" : "translate-x-0"
                         }`} />
                       </button>
@@ -1923,35 +1923,35 @@ export default function PlayerPage() {
 
                     {/* Shortcuts Reference */}
                     <div>
-                      <h3 className="text-xs font-bold text-black tracking-wide mb-3">Global Keyboard Shortcuts</h3>
+                      <h3 className="text-xs font-bold text-black dark:text-slate-100 tracking-wide mb-3">Global Keyboard Shortcuts</h3>
                       <div className="grid grid-cols-2 gap-2 text-[10px] text-black/60 font-bold font-mono">
                         <div className="flex justify-between border-b border-black/10 py-1.5 pr-4">
                           <span>[Space]</span>
-                          <span className="text-black">Play / Pause</span>
+                          <span className="text-black dark:text-slate-100">Play / Pause</span>
                         </div>
                         <div className="flex justify-between border-b border-black/10 py-1.5 pl-4">
                           <span>[ArrowUp/Down]</span>
-                          <span className="text-black">Volume +/-</span>
+                          <span className="text-black dark:text-slate-100">Volume +/-</span>
                         </div>
                         <div className="flex justify-between border-b border-black/10 py-1.5 pr-4">
                           <span>[ArrowLeft/Right]</span>
-                          <span className="text-black">Seek +/- 5s</span>
+                          <span className="text-black dark:text-slate-100">Seek +/- 5s</span>
                         </div>
                         <div className="flex justify-between border-b border-black/10 py-1.5 pl-4">
                           <span>[M]</span>
-                          <span className="text-black">Mute / Unmute</span>
+                          <span className="text-black dark:text-slate-100">Mute / Unmute</span>
                         </div>
                         <div className="flex justify-between border-b border-black/10 py-1.5 pr-4">
                           <span>[N]</span>
-                          <span className="text-black">Next Track</span>
+                          <span className="text-black dark:text-slate-100">Next Track</span>
                         </div>
                         <div className="flex justify-between border-b border-black/10 py-1.5 pl-4">
                           <span>[P]</span>
-                          <span className="text-black">Previous Track</span>
+                          <span className="text-black dark:text-slate-100">Previous Track</span>
                         </div>
                         <div className="flex justify-between border-b border-black/10 py-1.5 pr-4">
                           <span>[L]</span>
-                          <span className="text-black">Like/Favorite</span>
+                          <span className="text-black dark:text-slate-100">Like/Favorite</span>
                         </div>
                       </div>
                     </div>
@@ -1964,7 +1964,7 @@ export default function PlayerPage() {
                       </div>
                       <button
                         onClick={handleWipeDatabase}
-                        className="px-4 py-2 bg-[#e63b3b] hover:bg-[#d82a2a] border-2 border-black text-white text-[10.5px] font-bold rounded-xl transition-all cursor-pointer shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none"
+                        className="px-4 py-2 bg-[#e63b3b] hover:bg-[#d82a2a] border-2 border-black dark:border-[#334155] text-white text-[10.5px] font-bold rounded-xl transition-all cursor-pointer shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none"
                       >
                         Reset Storage
                       </button>
@@ -1975,44 +1975,44 @@ export default function PlayerPage() {
 
               {/* About Tab */}
               {activeTab === "about" && (
-                <div className="flex flex-col gap-6 animate-fade-in max-w-2xl text-black font-retro">
+                <div className="flex flex-col gap-6 animate-fade-in max-w-2xl text-black dark:text-slate-100 font-retro">
                   <div>
                     <h1 className="text-xl lg:text-2xl font-bold tracking-wide">About HeavenVerse</h1>
                     <p className="text-black/50 text-[11px] mt-0.5">Your private, offline-first personal music space.</p>
                   </div>
 
-                  <div className="bg-[#f9f8fa] border-2 border-black rounded-2xl p-6 shadow-[3px_3px_0px_black] space-y-5 text-xs leading-relaxed text-black/75 font-bold">
+                  <div className="bg-[#f9f8fa] border-2 border-black dark:border-[#334155] rounded-2xl p-6 shadow-[3px_3px_0px_black] space-y-5 text-xs leading-relaxed text-black/75 font-bold">
                     <p>
                       HeavenVerse V2 is built around a simple idea: your music should belong to you. Against typical streaming platforms that require accounts, log your activity, and track what you listen to, HeavenVerse keeps everything completely local and private.
                     </p>
                     
                     <div className="space-y-4 mt-2">
                       <div className="flex gap-3">
-                        <div className="p-2 bg-[#e2e1e6] border-2 border-black rounded-xl h-fit text-black shrink-0">
+                        <div className="p-2 bg-[#e2e1e6] dark:bg-[#020617] border-2 border-black dark:border-[#334155] rounded-xl h-fit text-black dark:text-slate-100 shrink-0">
                           <Shield className="w-4 h-4" />
                         </div>
                         <div>
-                          <strong className="text-black block text-[11.5px] font-bold uppercase">100% Private & Local</strong>
+                          <strong className="text-black dark:text-slate-100 block text-[11.5px] font-bold uppercase">100% Private & Local</strong>
                           <span className="text-black/55 text-[10.5px]">Your files never leave your device. They are kept securely inside your browser's private sandbox, ensuring nobody else can ever track or access them.</span>
                         </div>
                       </div>
 
                       <div className="flex gap-3">
-                        <div className="p-2 bg-[#e2e1e6] border-2 border-black rounded-xl h-fit text-black shrink-0">
+                        <div className="p-2 bg-[#e2e1e6] dark:bg-[#020617] border-2 border-black dark:border-[#334155] rounded-xl h-fit text-black dark:text-slate-100 shrink-0">
                           <Sliders className="w-4 h-4" />
                         </div>
                         <div>
-                          <strong className="text-black block text-[11.5px] font-bold uppercase">Offline Freedom</strong>
+                          <strong className="text-black dark:text-slate-100 block text-[11.5px] font-bold uppercase">Offline Freedom</strong>
                           <span className="text-black/55 text-[10.5px]">Your songs and playlists are saved directly to your browser memory. Once imported, you can disconnect from the internet and listen to your music anywhere.</span>
                         </div>
                       </div>
 
                       <div className="flex gap-3">
-                        <div className="p-2 bg-[#e2e1e6] border-2 border-black rounded-xl h-fit text-black shrink-0">
+                        <div className="p-2 bg-[#e2e1e6] dark:bg-[#020617] border-2 border-black dark:border-[#334155] rounded-xl h-fit text-black dark:text-slate-100 shrink-0">
                           <Music className="w-4 h-4" />
                         </div>
                         <div>
-                          <strong className="text-black block text-[11.5px] font-bold uppercase">No Accounts, No Tracking</strong>
+                          <strong className="text-black dark:text-slate-100 block text-[11.5px] font-bold uppercase">No Accounts, No Tracking</strong>
                           <span className="text-black/55 text-[10.5px]">No logins, no passwords, and no trackers. You open the page, drop your music, and start listening instantly. Simple as that.</span>
                         </div>
                       </div>
@@ -2029,10 +2029,10 @@ export default function PlayerPage() {
         </main>
 
         {/* Right Panel (Now Playing, Visualizer & Queue) */}
-        <section className="hidden xl:flex w-80 bg-[#e2e1e6] border-l-4 border-black flex-col p-6 overflow-y-auto custom-scrollbar gap-6 text-black font-retro">
+        <section className="hidden xl:flex w-80 bg-[#e2e1e6] dark:bg-[#020617] border-l-4 border-black dark:border-[#334155] flex-col p-6 overflow-y-auto custom-scrollbar gap-6 text-black dark:text-slate-100 font-retro">
           
           {/* Now Playing Widget */}
-          <div className="bg-[#f9f8fa] border-2 border-black rounded-[1.5rem] p-5 shadow-[3px_3px_0px_black] flex flex-col gap-4">
+          <div className="bg-[#f9f8fa] border-2 border-black dark:border-[#334155] rounded-[1.5rem] p-5 shadow-[3px_3px_0px_black] flex flex-col gap-4">
             <h3 className="text-[10px] font-bold text-black/55 uppercase tracking-widest px-0.5 font-retro">Now Playing</h3>
             
             {/* Mini 3D CRT Monitor Frame */}
@@ -2044,7 +2044,7 @@ export default function PlayerPage() {
               {/* Phosphor glow effect */}
               <div className={`absolute inset-0 pointer-events-none z-0 bg-blue-500/5 mix-blend-color-dodge transition-opacity ${isPlaying ? "crt-glow animate-crt-flicker" : "opacity-20"}`} />
 
-              <div className="relative aspect-square w-full rounded-lg overflow-hidden border border-black flex items-center justify-center bg-zinc-950 z-0">
+              <div className="relative aspect-square w-full rounded-lg overflow-hidden border border-black dark:border-[#334155] flex items-center justify-center bg-zinc-950 z-0">
                 {isUrl(currentTrack?.coverArt) ? (
                   <img
                     src={currentTrack?.coverArt}
@@ -2058,7 +2058,7 @@ export default function PlayerPage() {
                 )}
                 
                 {/* Mini Japanese corner stamp */}
-                <div className="absolute top-2 left-2 bg-[#e63b3b] text-white text-[8px] font-retro px-1 border border-black leading-none uppercase select-none">
+                <div className="absolute top-2 left-2 bg-[#e63b3b] text-white text-[8px] font-retro px-1 border border-black dark:border-[#334155] leading-none uppercase select-none">
                   再生
                 </div>
               </div>
@@ -2077,7 +2077,7 @@ export default function PlayerPage() {
             {/* Canvas Frequency Visualizer */}
             {visualizerOn && (
               <div className="flex flex-col gap-2">
-                <div className="relative group/viz h-20 bg-[#d5d4d9] rounded-xl border-2 border-black p-2 flex items-center justify-center overflow-hidden shadow-inner">
+                <div className="relative group/viz h-20 bg-[#d5d4d9] rounded-xl border-2 border-black dark:border-[#334155] p-2 flex items-center justify-center overflow-hidden shadow-inner">
                   <canvas
                     ref={canvasRef}
                     width={260}
@@ -2088,7 +2088,7 @@ export default function PlayerPage() {
                   {/* Visualizer Settings Button */}
                   <button
                     onClick={() => setShowVizCustomizer(!showVizCustomizer)}
-                    className={`absolute top-1.5 right-1.5 p-1 bg-white hover:bg-zinc-100 border-2 border-black rounded-lg transition-all cursor-pointer shadow-[1.5px_1.5px_0px_black] active:translate-y-0.5 active:shadow-none z-20 ${
+                    className={`absolute top-1.5 right-1.5 p-1 bg-white dark:bg-[#1e293b] hover:bg-zinc-100 border-2 border-black dark:border-[#334155] rounded-lg transition-all cursor-pointer shadow-[1.5px_1.5px_0px_black] active:translate-y-0.5 active:shadow-none z-20 ${
                       showVizCustomizer ? "opacity-100 text-red-500" : "opacity-0 group-hover/viz:opacity-100 text-black/50"
                     }`}
                     title="Customize Visualizer"
@@ -2099,12 +2099,12 @@ export default function PlayerPage() {
 
                 {/* Visualizer Customizer Panel */}
                 {showVizCustomizer && (
-                  <div className="bg-[#f9f8fa] border-2 border-black rounded-xl p-3 shadow-[3px_3px_0px_black] text-xs space-y-3 animate-fade-in z-20 text-black">
+                  <div className="bg-[#f9f8fa] border-2 border-black dark:border-[#334155] rounded-xl p-3 shadow-[3px_3px_0px_black] text-xs space-y-3 animate-fade-in z-20 text-black dark:text-slate-100">
                     <div className="flex justify-between items-center pb-1.5 border-b border-black/10">
-                      <span className="font-bold text-black text-[10.5px] uppercase tracking-wider">Visualizer Styles</span>
+                      <span className="font-bold text-black dark:text-slate-100 text-[10.5px] uppercase tracking-wider">Visualizer Styles</span>
                       <button 
                         onClick={() => setShowVizCustomizer(false)}
-                        className="text-black/50 hover:text-black font-bold cursor-pointer"
+                        className="text-black/50 hover:text-black dark:text-slate-100 font-bold cursor-pointer"
                       >
                         ✕
                       </button>
@@ -2120,8 +2120,8 @@ export default function PlayerPage() {
                             onClick={() => updateVizPattern(pat)}
                             className={`py-1 text-[9px] font-bold rounded-lg border-2 capitalize transition-all cursor-pointer ${
                               vizPattern === pat
-                                ? "bg-[#4a689d] border-black text-white"
-                                : "bg-white border-black/25 text-black hover:bg-zinc-100"
+                                ? "bg-[#4a689d] border-black dark:border-[#334155] text-white"
+                                : "bg-white dark:bg-[#1e293b] border-black/25 text-black dark:text-slate-100 hover:bg-zinc-100"
                             }`}
                           >
                             {pat}
@@ -2140,8 +2140,8 @@ export default function PlayerPage() {
                             onClick={() => updateVizColor(col)}
                             className={`py-0.5 text-[8px] font-bold rounded-lg border-2 capitalize transition-all cursor-pointer ${
                               vizColor === col
-                                ? "bg-[#4a689d] border-black text-white"
-                                : "bg-white border-black/25 text-black hover:bg-zinc-100"
+                                ? "bg-[#4a689d] border-black dark:border-[#334155] text-white"
+                                : "bg-white dark:bg-[#1e293b] border-black/25 text-black dark:text-slate-100 hover:bg-zinc-100"
                             }`}
                           >
                             {col}
@@ -2160,8 +2160,8 @@ export default function PlayerPage() {
                             onClick={() => updateVizGlow(glow)}
                             className={`py-1 text-[9px] font-bold rounded-lg border-2 capitalize transition-all cursor-pointer ${
                               vizGlow === glow
-                                ? "bg-[#4a689d] border-black text-white"
-                                : "bg-white border-black/25 text-black hover:bg-zinc-100"
+                                ? "bg-[#4a689d] border-black dark:border-[#334155] text-white"
+                                : "bg-white dark:bg-[#1e293b] border-black/25 text-black dark:text-slate-100 hover:bg-zinc-100"
                             }`}
                           >
                             {glow}
@@ -2182,7 +2182,7 @@ export default function PlayerPage() {
               {queue.length > 0 && (
                 <button
                   onClick={() => setQueue([currentTrackId || ""])}
-                  className="text-[9.5px] font-bold text-black/50 hover:text-black transition-colors cursor-pointer"
+                  className="text-[9.5px] font-bold text-black/50 hover:text-black dark:text-slate-100 transition-colors cursor-pointer"
                 >
                   Clear Queue
                 </button>
@@ -2201,7 +2201,7 @@ export default function PlayerPage() {
                     onClick={() => selectAndPlayTrack(track.id, queue)}
                     className={`flex items-center justify-between p-2 rounded-xl cursor-pointer transition-all border-2 ${
                       isCurrent
-                        ? "bg-[#4a689d]/10 border-black shadow-[1.5px_1.5px_0px_black]"
+                        ? "bg-[#4a689d]/10 border-black dark:border-[#334155] shadow-[1.5px_1.5px_0px_black]"
                         : "hover:bg-black/5 border-transparent"
                     }`}
                   >
@@ -2220,7 +2220,7 @@ export default function PlayerPage() {
                         )}
                       </div>
                       <div className="flex flex-col min-w-0">
-                        <span className={`text-xs font-bold truncate ${isCurrent ? "text-[#4a689d]" : "text-black"}`}>
+                        <span className={`text-xs font-bold truncate ${isCurrent ? "text-[#4a689d]" : "text-black dark:text-slate-100"}`}>
                           {track.title}
                         </span>
                         <span className="text-[10.5px] text-black/50 truncate mt-0.5">{track.artist}</span>
@@ -2243,14 +2243,14 @@ export default function PlayerPage() {
       </div>
 
       {/* Bottom Persistent Audio Control Bar */}
-      <footer className="z-20 bg-[#e2e1e6] border-t-4 border-black py-4 px-6 flex items-center justify-between shadow-[0_-4px_10px_rgba(0,0,0,0.15)] text-black font-retro relative">
+      <footer className="z-20 bg-[#e2e1e6] dark:bg-[#020617] border-t-4 border-black dark:border-[#334155] py-4 px-6 flex items-center justify-between shadow-[0_-4px_10px_rgba(0,0,0,0.15)] text-black dark:text-slate-100 font-retro relative">
         
         {/* Left Side: Brief track info / LCD panel */}
         <div className="flex items-center gap-3.5 w-1/4 min-w-0">
           {currentTrack ? (
             <>
               {/* Mini cassette/album art frame */}
-              <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0 border-2 border-black shadow-[1.5px_1.5px_0px_black] flex items-center justify-center bg-slate-900 relative">
+              <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0 border-2 border-black dark:border-[#334155] shadow-[1.5px_1.5px_0px_black] flex items-center justify-center bg-slate-900 relative">
                 {isUrl(currentTrack.coverArt) ? (
                   <img
                     src={currentTrack.coverArt}
@@ -2265,7 +2265,7 @@ export default function PlayerPage() {
               </div>
               
               {/* Inset LCD text display */}
-              <div className="flex-1 min-w-0 bg-[#090b10] border-2 border-black rounded-xl px-3 py-1.5 font-sans text-[10px] text-emerald-400 select-none shadow-[inset_0_2px_5px_rgba(0,0,0,0.7)]">
+              <div className="flex-1 min-w-0 bg-[#090b10] border-2 border-black dark:border-[#334155] rounded-xl px-3 py-1.5 font-sans text-[10px] text-emerald-400 select-none shadow-[inset_0_2px_5px_rgba(0,0,0,0.7)]">
                 <span className="text-[8px] text-emerald-400 block font-bold tracking-widest uppercase opacity-75">TRACK DECK</span>
                 <div className="truncate font-bold uppercase mt-0.5 text-emerald-400 text-[10px] tracking-wide">
                   {currentTrack.title}
@@ -2278,21 +2278,21 @@ export default function PlayerPage() {
               <button
                 onClick={() => toggleLikeTrack(currentTrack.id)}
                 className={`p-1.5 rounded-lg border-2 border-transparent hover:border-black/10 transition-all shrink-0 ${
-                  likedTrackIds.includes(currentTrack.id) ? "text-[#e63b3b]" : "text-black/40 hover:text-black"
+                  likedTrackIds.includes(currentTrack.id) ? "text-[#e63b3b]" : "text-black/40 hover:text-black dark:text-slate-100"
                 }`}
               >
                 <Heart className="w-3.5 h-3.5" fill={likedTrackIds.includes(currentTrack.id) ? "currentColor" : "none"} />
               </button>
             </>
           ) : (
-            <div className="bg-[#090b10] border-2 border-black rounded-xl px-3 py-2.5 font-mono text-[10px] text-emerald-500/40 select-none w-full">
+            <div className="bg-[#090b10] border-2 border-black dark:border-[#334155] rounded-xl px-3 py-2.5 font-mono text-[10px] text-emerald-500/40 select-none w-full">
               SYSTEM STANDBY • NO MEDIA
             </div>
           )}
         </div>
 
         {/* Center: Playback Controls + Seek bar */}
-        <div className="flex flex-col items-center gap-2 w-2/5 text-black">
+        <div className="flex flex-col items-center gap-2 w-2/5 text-black dark:text-slate-100">
           {/* Action buttons */}
           <div className="flex items-center gap-4">
             <button
@@ -2301,8 +2301,8 @@ export default function PlayerPage() {
                 setShuffleOn(nextVal)
                 localStorage.setItem("hv_shuffle", nextVal.toString())
               }}
-              className={`p-1.5 rounded-lg border-2 border-black shadow-[1.5px_1.5px_0px_black] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer ${
-                shuffleOn ? "bg-[#4a689d] text-white" : "bg-white text-black hover:bg-zinc-100"
+              className={`p-1.5 rounded-lg border-2 border-black dark:border-[#334155] shadow-[1.5px_1.5px_0px_black] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer ${
+                shuffleOn ? "bg-[#4a689d] text-white" : "bg-white dark:bg-[#1e293b] text-black dark:text-slate-100 hover:bg-zinc-100"
               }`}
               title="Shuffle"
             >
@@ -2312,7 +2312,7 @@ export default function PlayerPage() {
             <button
               onClick={playPrevTrack}
               disabled={queue.length === 0}
-              className="p-1.5 rounded-lg bg-white border-2 border-black shadow-[1.5px_1.5px_0px_black] active:translate-y-0.5 active:shadow-none text-black hover:bg-zinc-100 transition-all disabled:opacity-30 disabled:pointer-events-none shrink-0"
+              className="p-1.5 rounded-lg bg-white dark:bg-[#1e293b] border-2 border-black dark:border-[#334155] shadow-[1.5px_1.5px_0px_black] active:translate-y-0.5 active:shadow-none text-black dark:text-slate-100 hover:bg-zinc-100 transition-all disabled:opacity-30 disabled:pointer-events-none shrink-0"
               title="Previous"
             >
               <SkipBack className="w-4 h-4 fill-current" />
@@ -2321,8 +2321,8 @@ export default function PlayerPage() {
             <button
               onClick={() => setIsPlaying(!isPlaying)}
               disabled={!currentTrackId}
-              className={`w-9 h-9 rounded-xl border-2 border-black shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none transition-all flex items-center justify-center cursor-pointer shrink-0 disabled:opacity-30 disabled:pointer-events-none ${
-                isPlaying ? "bg-[#e63b3b] text-white" : "bg-white text-black hover:bg-zinc-100"
+              className={`w-9 h-9 rounded-xl border-2 border-black dark:border-[#334155] shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none transition-all flex items-center justify-center cursor-pointer shrink-0 disabled:opacity-30 disabled:pointer-events-none ${
+                isPlaying ? "bg-[#e63b3b] text-white" : "bg-white dark:bg-[#1e293b] text-black dark:text-slate-100 hover:bg-zinc-100"
               }`}
               title={isPlaying ? "Pause" : "Play"}
             >
@@ -2336,7 +2336,7 @@ export default function PlayerPage() {
             <button
               onClick={playNextTrack}
               disabled={queue.length === 0}
-              className="p-1.5 rounded-lg bg-white border-2 border-black shadow-[1.5px_1.5px_0px_black] active:translate-y-0.5 active:shadow-none text-black hover:bg-zinc-100 transition-all disabled:opacity-30 disabled:pointer-events-none shrink-0"
+              className="p-1.5 rounded-lg bg-white dark:bg-[#1e293b] border-2 border-black dark:border-[#334155] shadow-[1.5px_1.5px_0px_black] active:translate-y-0.5 active:shadow-none text-black dark:text-slate-100 hover:bg-zinc-100 transition-all disabled:opacity-30 disabled:pointer-events-none shrink-0"
               title="Next"
             >
               <SkipForward className="w-4 h-4 fill-current" />
@@ -2350,14 +2350,14 @@ export default function PlayerPage() {
                 setRepeatMode(nextVal)
                 localStorage.setItem("hv_repeat", nextVal)
               }}
-              className={`p-1.5 rounded-lg border-2 border-black shadow-[1.5px_1.5px_0px_black] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer relative ${
-                repeatMode !== "off" ? "bg-[#4a689d] text-white" : "bg-white text-black hover:bg-zinc-100"
+              className={`p-1.5 rounded-lg border-2 border-black dark:border-[#334155] shadow-[1.5px_1.5px_0px_black] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer relative ${
+                repeatMode !== "off" ? "bg-[#4a689d] text-white" : "bg-white dark:bg-[#1e293b] text-black dark:text-slate-100 hover:bg-zinc-100"
               }`}
               title={`Repeat: ${repeatMode}`}
             >
               <Repeat className="w-3.5 h-3.5" />
               {repeatMode === "one" && (
-                <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#e63b3b] text-white text-[7.5px] rounded-full flex items-center justify-center font-bold border border-black">
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-[#e63b3b] text-white text-[7.5px] rounded-full flex items-center justify-center font-bold border border-black dark:border-[#334155]">
                   1
                 </span>
               )}
@@ -2402,7 +2402,7 @@ export default function PlayerPage() {
               setIsMuted(nextVal)
               localStorage.setItem("hv_muted", nextVal.toString())
             }}
-            className="text-black/50 hover:text-black transition-colors cursor-pointer shrink-0"
+            className="text-black/50 hover:text-black dark:text-slate-100 transition-colors cursor-pointer shrink-0"
             title="Mute"
           >
             {isMuted || volume === 0 ? (
@@ -2438,7 +2438,7 @@ export default function PlayerPage() {
           <button
             onClick={toggleFullscreenMode}
             disabled={!currentTrackId}
-            className="p-1 rounded-lg bg-white border-2 border-black shadow-[1.5px_1.5px_0px_black] active:translate-y-0.5 active:shadow-none text-black hover:bg-zinc-100 transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none ml-2"
+            className="p-1 rounded-lg bg-white dark:bg-[#1e293b] border-2 border-black dark:border-[#334155] shadow-[1.5px_1.5px_0px_black] active:translate-y-0.5 active:shadow-none text-black dark:text-slate-100 hover:bg-zinc-100 transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none ml-2"
             title="Fullscreen Mode"
           >
             <Maximize2 className="w-3.5 h-3.5" />
@@ -2467,7 +2467,7 @@ export default function PlayerPage() {
             
             <button
               onClick={toggleFullscreenMode}
-              className="p-2 rounded-xl bg-white hover:bg-zinc-100 border-2 border-black text-black text-xs font-retro shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer flex items-center gap-2"
+              className="p-2 rounded-xl bg-white dark:bg-[#1e293b] hover:bg-zinc-100 border-2 border-black dark:border-[#334155] text-black dark:text-slate-100 text-xs font-retro shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer flex items-center gap-2"
             >
               <Minimize2 className="w-4 h-4" />
               <span>Minimize</span>
@@ -2561,8 +2561,8 @@ export default function PlayerPage() {
                   {currentTrack && (
                     <button
                       onClick={() => toggleLikeTrack(currentTrack.id)}
-                      className={`p-1.5 rounded-lg bg-white border-2 border-black shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer ${
-                        likedTrackIds.includes(currentTrack.id) ? "text-red-500" : "text-black/60 hover:text-black"
+                      className={`p-1.5 rounded-lg bg-white dark:bg-[#1e293b] border-2 border-black dark:border-[#334155] shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer ${
+                        likedTrackIds.includes(currentTrack.id) ? "text-red-500" : "text-black/60 hover:text-black dark:text-slate-100"
                       }`}
                     >
                       <Heart className="w-4 h-4" fill={likedTrackIds.includes(currentTrack.id) ? "currentColor" : "none"} />
@@ -2706,11 +2706,11 @@ export default function PlayerPage() {
           </div>
 
           {/* Controls Console (Tactile Retro Beige Deck) */}
-          <footer className="z-10 bg-[#e2e1e6] border-[4px] border-[#1e1e24] rounded-3xl p-5 md:p-6 shadow-[6px_6px_0px_rgba(0,0,0,0.3)] flex flex-col gap-4 text-black font-retro">
+          <footer className="z-10 bg-[#e2e1e6] dark:bg-[#020617] border-[4px] border-[#1e1e24] rounded-3xl p-5 md:p-6 shadow-[6px_6px_0px_rgba(0,0,0,0.3)] flex flex-col gap-4 text-black dark:text-slate-100 font-retro">
             
             {/* Timeline Progress Bar */}
             <div className="w-full flex items-center gap-4">
-              <span className="text-[11px] text-black font-bold font-mono w-10 text-right select-none">
+              <span className="text-[11px] text-black dark:text-slate-100 font-bold font-mono w-10 text-right select-none">
                 {formatTime(currentTime)}
               </span>
               <div className="flex-1 relative flex items-center group h-4">
@@ -2724,7 +2724,7 @@ export default function PlayerPage() {
                     if (audioRef.current) audioRef.current.currentTime = val
                     setCurrentTime(val)
                   }}
-                  className="w-full h-2 bg-[#b8b6bc] rounded-full appearance-none cursor-pointer accent-[#1e1e24] focus:outline-none border-2 border-black"
+                  className="w-full h-2 bg-[#b8b6bc] rounded-full appearance-none cursor-pointer accent-[#1e1e24] focus:outline-none border-2 border-black dark:border-[#334155]"
                   style={{
                     background: `linear-gradient(to right, #4a689d ${
                       duration > 0 ? (currentTime / duration) * 100 : 0
@@ -2732,7 +2732,7 @@ export default function PlayerPage() {
                   }}
                 />
               </div>
-              <span className="text-[11px] text-black font-bold font-mono w-10 text-left select-none">
+              <span className="text-[11px] text-black dark:text-slate-100 font-bold font-mono w-10 text-left select-none">
                 {formatTime(duration)}
               </span>
             </div>
@@ -2769,8 +2769,8 @@ export default function PlayerPage() {
                     setShuffleOn(nextVal)
                     localStorage.setItem("hv_shuffle", nextVal.toString())
                   }}
-                  className={`p-2.5 rounded-xl border-2 border-black transition-all cursor-pointer shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none ${
-                    shuffleOn ? "bg-[#4a689d] text-white" : "bg-white text-black hover:bg-zinc-100"
+                  className={`p-2.5 rounded-xl border-2 border-black dark:border-[#334155] transition-all cursor-pointer shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none ${
+                    shuffleOn ? "bg-[#4a689d] text-white" : "bg-white dark:bg-[#1e293b] text-black dark:text-slate-100 hover:bg-zinc-100"
                   }`}
                   title="Shuffle"
                 >
@@ -2781,7 +2781,7 @@ export default function PlayerPage() {
                 <button
                   onClick={playPrevTrack}
                   disabled={queue.length === 0}
-                  className="p-2.5 rounded-xl bg-white text-black hover:bg-zinc-100 border-2 border-black transition-all cursor-pointer shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none disabled:opacity-30 disabled:pointer-events-none"
+                  className="p-2.5 rounded-xl bg-white dark:bg-[#1e293b] text-black dark:text-slate-100 hover:bg-zinc-100 border-2 border-black dark:border-[#334155] transition-all cursor-pointer shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none disabled:opacity-30 disabled:pointer-events-none"
                   title="Previous"
                 >
                   <SkipBack className="w-4.5 h-4.5 fill-current" />
@@ -2791,7 +2791,7 @@ export default function PlayerPage() {
                 <button
                   onClick={() => setIsPlaying(!isPlaying)}
                   disabled={!currentTrackId}
-                  className="w-12 h-12 rounded-xl bg-[#e63b3b] text-white hover:bg-[#d82a2a] border-[3px] border-black transition-all cursor-pointer shadow-[3px_3px_0px_black] active:translate-y-0.5 active:shadow-none disabled:opacity-30 disabled:pointer-events-none flex items-center justify-center animate-[pulse_3s_infinite_alternate]"
+                  className="w-12 h-12 rounded-xl bg-[#e63b3b] text-white hover:bg-[#d82a2a] border-[3px] border-black dark:border-[#334155] transition-all cursor-pointer shadow-[3px_3px_0px_black] active:translate-y-0.5 active:shadow-none disabled:opacity-30 disabled:pointer-events-none flex items-center justify-center animate-[pulse_3s_infinite_alternate]"
                   style={{ animationPlayState: isPlaying ? "paused" : "running" }}
                   title={isPlaying ? "Pause" : "Play"}
                 >
@@ -2806,7 +2806,7 @@ export default function PlayerPage() {
                 <button
                   onClick={playNextTrack}
                   disabled={queue.length === 0}
-                  className="p-2.5 rounded-xl bg-white text-black hover:bg-zinc-100 border-2 border-black transition-all cursor-pointer shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none disabled:opacity-30 disabled:pointer-events-none"
+                  className="p-2.5 rounded-xl bg-white dark:bg-[#1e293b] text-black dark:text-slate-100 hover:bg-zinc-100 border-2 border-black dark:border-[#334155] transition-all cursor-pointer shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none disabled:opacity-30 disabled:pointer-events-none"
                   title="Next"
                 >
                   <SkipForward className="w-4.5 h-4.5 fill-current" />
@@ -2821,14 +2821,14 @@ export default function PlayerPage() {
                     setRepeatMode(nextVal)
                     localStorage.setItem("hv_repeat", nextVal)
                   }}
-                  className={`p-2.5 rounded-xl border-2 border-black transition-all cursor-pointer relative shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none ${
-                    repeatMode !== "off" ? "bg-[#4a689d] text-white" : "bg-white text-black hover:bg-zinc-100"
+                  className={`p-2.5 rounded-xl border-2 border-black dark:border-[#334155] transition-all cursor-pointer relative shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none ${
+                    repeatMode !== "off" ? "bg-[#4a689d] text-white" : "bg-white dark:bg-[#1e293b] text-black dark:text-slate-100 hover:bg-zinc-100"
                   }`}
                   title={`Repeat: ${repeatMode}`}
                 >
                   <Repeat className="w-4.5 h-4.5" />
                   {repeatMode === "one" && (
-                    <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-red-600 text-white text-[8px] rounded-full flex items-center justify-center font-bold border border-black shadow">
+                    <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-red-600 text-white text-[8px] rounded-full flex items-center justify-center font-bold border border-black dark:border-[#334155] shadow">
                       1
                     </span>
                   )}
@@ -2843,7 +2843,7 @@ export default function PlayerPage() {
                     setIsMuted(nextVal)
                     localStorage.setItem("hv_muted", nextVal.toString())
                   }}
-                  className="p-2 rounded-xl bg-white border-2 border-black shadow-[2px_2px_0px_black] text-black hover:bg-zinc-100 transition-colors cursor-pointer shrink-0"
+                  className="p-2 rounded-xl bg-white dark:bg-[#1e293b] border-2 border-black dark:border-[#334155] shadow-[2px_2px_0px_black] text-black dark:text-slate-100 hover:bg-zinc-100 transition-colors cursor-pointer shrink-0"
                   title="Mute"
                 >
                   {isMuted || volume === 0 ? (
@@ -2867,7 +2867,7 @@ export default function PlayerPage() {
                       localStorage.setItem("hv_volume", val.toString())
                       if (isMuted) setIsMuted(false)
                     }}
-                    className="w-full h-2 bg-[#b8b6bc] rounded-full appearance-none cursor-pointer accent-[#1e1e24] focus:outline-none border-2 border-black"
+                    className="w-full h-2 bg-[#b8b6bc] rounded-full appearance-none cursor-pointer accent-[#1e1e24] focus:outline-none border-2 border-black dark:border-[#334155]"
                     style={{
                       background: `linear-gradient(to right, #4a689d ${
                         isMuted ? 0 : volume

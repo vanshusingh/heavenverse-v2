@@ -112,7 +112,7 @@ export function F1RaceWidget() {
 
               <div
                 className={`px-1.5 py-0.5 rounded text-xs font-bold ${
-                  driver.tire === "M" ? "bg-yellow-500 text-black" : "bg-red-500 text-white"
+                  driver.tire === "M" ? "bg-yellow-500 text-black dark:text-slate-100" : "bg-red-500 text-white"
                 }`}
               >
                 {driver.tire}

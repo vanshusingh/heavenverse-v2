@@ -60,41 +60,41 @@ function getWeatherVisuals(code: number, isDay: boolean) {
   // Sunny / Clear
   if (code === 1000) {
     return isDay
-      ? { icon: Sun, color: "text-amber-600", glow: "", bg: "bg-[#e2e1e6] border-2 border-black" }
-      : { icon: Moon, color: "text-indigo-800", glow: "", bg: "bg-[#e2e1e6] border-2 border-black" }
+      ? { icon: Sun, color: "text-amber-600", glow: "", bg: "bg-[#e2e1e6] dark:bg-[#020617] border-2 border-black dark:border-[#334155]" }
+      : { icon: Moon, color: "text-indigo-800", glow: "", bg: "bg-[#e2e1e6] dark:bg-[#020617] border-2 border-black dark:border-[#334155]" }
   }
   // Partly cloudy
   if (code === 1003) {
     return isDay
-      ? { icon: CloudSun, color: "text-amber-600", glow: "", bg: "bg-[#e2e1e6] border-2 border-black" }
-      : { icon: CloudMoon, color: "text-indigo-800", glow: "", bg: "bg-[#e2e1e6] border-2 border-black" }
+      ? { icon: CloudSun, color: "text-amber-600", glow: "", bg: "bg-[#e2e1e6] dark:bg-[#020617] border-2 border-black dark:border-[#334155]" }
+      : { icon: CloudMoon, color: "text-indigo-800", glow: "", bg: "bg-[#e2e1e6] dark:bg-[#020617] border-2 border-black dark:border-[#334155]" }
   }
   // Cloudy / Overcast
   if (code === 1006 || code === 1009) {
-    return { icon: Cloud, color: "text-zinc-700", glow: "", bg: "bg-[#e2e1e6] border-2 border-black" }
+    return { icon: Cloud, color: "text-zinc-700", glow: "", bg: "bg-[#e2e1e6] dark:bg-[#020617] border-2 border-black dark:border-[#334155]" }
   }
   // Mist / Fog
   if (code === 1030 || code === 1135 || code === 1147) {
-    return { icon: CloudFog, color: "text-zinc-600", glow: "", bg: "bg-[#e2e1e6] border-2 border-black" }
+    return { icon: CloudFog, color: "text-zinc-600", glow: "", bg: "bg-[#e2e1e6] dark:bg-[#020617] border-2 border-black dark:border-[#334155]" }
   }
   // Drizzle / Light rain
   if ([1063, 1150, 1153, 1168, 1171, 1180, 1183].includes(code)) {
-    return { icon: CloudDrizzle, color: "text-sky-700", glow: "", bg: "bg-[#e2e1e6] border-2 border-black" }
+    return { icon: CloudDrizzle, color: "text-sky-700", glow: "", bg: "bg-[#e2e1e6] dark:bg-[#020617] border-2 border-black dark:border-[#334155]" }
   }
   // Rain / Heavy rain
   if ([1186, 1189, 1192, 1195, 1198, 1201, 1240, 1243, 1246].includes(code)) {
-    return { icon: CloudRain, color: "text-blue-700", glow: "", bg: "bg-[#e2e1e6] border-2 border-black" }
+    return { icon: CloudRain, color: "text-blue-700", glow: "", bg: "bg-[#e2e1e6] dark:bg-[#020617] border-2 border-black dark:border-[#334155]" }
   }
   // Snow
   if ([1066, 1069, 1072, 1114, 1117, 1204, 1207, 1210, 1213, 1216, 1219, 1222, 1225, 1237, 1249, 1252, 1255, 1258, 1261, 1264].includes(code)) {
-    return { icon: Snowflake, color: "text-sky-600", glow: "", bg: "bg-[#e2e1e6] border-2 border-black" }
+    return { icon: Snowflake, color: "text-sky-600", glow: "", bg: "bg-[#e2e1e6] dark:bg-[#020617] border-2 border-black dark:border-[#334155]" }
   }
   // Thunderstorm
   if ([1087, 1273, 1276, 1279, 1282].includes(code)) {
-    return { icon: CloudLightning, color: "text-amber-700", glow: "", bg: "bg-[#e2e1e6] border-2 border-black" }
+    return { icon: CloudLightning, color: "text-amber-700", glow: "", bg: "bg-[#e2e1e6] dark:bg-[#020617] border-2 border-black dark:border-[#334155]" }
   }
   // Default — windy / other
-  return { icon: Wind, color: "text-teal-700", glow: "", bg: "bg-[#e2e1e6] border-2 border-black" }
+  return { icon: Wind, color: "text-teal-700", glow: "", bg: "bg-[#e2e1e6] dark:bg-[#020617] border-2 border-black dark:border-[#334155]" }
 }
 
 export function TimeWeatherWidget({ onAddFiles }: TimeWeatherWidgetProps) {
@@ -237,15 +237,15 @@ export function TimeWeatherWidget({ onAddFiles }: TimeWeatherWidgetProps) {
   const isDay = weather?.current?.is_day ?? 1
   const visuals = weather
     ? getWeatherVisuals(weather.current.condition.code, isDay === 1)
-    : { icon: Sun, color: "text-amber-600", glow: "", bg: "bg-[#e2e1e6] border-2 border-black" }
+    : { icon: Sun, color: "text-amber-600", glow: "", bg: "bg-[#e2e1e6] dark:bg-[#020617] border-2 border-black dark:border-[#334155]" }
   const WeatherIcon = visuals.icon
 
   return (
-    <div className="w-full max-w-[340px] h-[520px] bg-[#f9f8fa] border-[3px] border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] rounded-[2rem] p-6 flex flex-col justify-between hover:translate-y-[-2px] transition-transform text-black font-retro">
+    <div className="w-full max-w-[340px] h-[520px] bg-[#f9f8fa] border-[3px] border-black dark:border-[#334155] shadow-[4px_4px_0px_rgba(0,0,0,1)] rounded-[2rem] p-6 flex flex-col justify-between hover:translate-y-[-2px] transition-transform text-black dark:text-slate-100 font-retro">
       
       {/* Clock Section */}
       <div>
-        <div className="text-3xl font-bold font-mono tracking-tight tabular-nums text-black">
+        <div className="text-3xl font-bold font-mono tracking-tight tabular-nums text-black dark:text-slate-100">
           {formatTime(currentTime).toUpperCase()}
         </div>
         <div className="text-[11px] text-black/60 mt-1">
@@ -268,7 +268,7 @@ export function TimeWeatherWidget({ onAddFiles }: TimeWeatherWidgetProps) {
           <button
             onClick={fetchWeather}
             disabled={weatherLoading}
-            className="p-1 rounded-lg bg-white border-2 border-black shadow-[1.5px_1.5px_0px_black] active:translate-y-0.5 active:shadow-none text-black hover:bg-zinc-100 transition-all cursor-pointer disabled:opacity-30"
+            className="p-1 rounded-lg bg-white dark:bg-[#1e293b] border-2 border-black dark:border-[#334155] shadow-[1.5px_1.5px_0px_black] active:translate-y-0.5 active:shadow-none text-black dark:text-slate-100 hover:bg-zinc-100 transition-all cursor-pointer disabled:opacity-30"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${weatherLoading ? "animate-spin" : ""}`} />
           </button>
@@ -283,7 +283,7 @@ export function TimeWeatherWidget({ onAddFiles }: TimeWeatherWidgetProps) {
             <span className="text-[10px] text-black/50 italic">{weatherError}</span>
             <button
               onClick={fetchWeather}
-              className="block mx-auto mt-2 text-[10px] text-black/70 hover:text-black font-bold underline cursor-pointer"
+              className="block mx-auto mt-2 text-[10px] text-black/70 hover:text-black dark:text-slate-100 font-bold underline cursor-pointer"
             >
               Retry
             </button>
@@ -299,7 +299,7 @@ export function TimeWeatherWidget({ onAddFiles }: TimeWeatherWidgetProps) {
               </div>
               <div className="flex flex-col">
                 <span className="text-[11px] text-black/50 font-bold uppercase">{weather.current.condition.text}</span>
-                <span className="text-2xl font-bold text-black tracking-tight">
+                <span className="text-2xl font-bold text-black dark:text-slate-100 tracking-tight">
                   {Math.round(weather.current.temp_c)}°C
                 </span>
               </div>
@@ -310,7 +310,7 @@ export function TimeWeatherWidget({ onAddFiles }: TimeWeatherWidgetProps) {
                 <span className="text-black/50 font-semibold flex items-center gap-1.5">
                   <Thermometer className="w-3 h-3" /> Feels like
                 </span>
-                <span className="text-black font-mono font-bold tabular-nums">
+                <span className="text-black dark:text-slate-100 font-mono font-bold tabular-nums">
                   {Math.round(weather.current.feelslike_c)}°C
                 </span>
               </div>
@@ -318,7 +318,7 @@ export function TimeWeatherWidget({ onAddFiles }: TimeWeatherWidgetProps) {
                 <span className="text-black/50 font-semibold flex items-center gap-1.5">
                   <Droplets className="w-3 h-3" /> Humidity
                 </span>
-                <span className="text-black font-mono font-bold tabular-nums">
+                <span className="text-black dark:text-slate-100 font-mono font-bold tabular-nums">
                   {weather.current.humidity}%
                 </span>
               </div>
@@ -326,7 +326,7 @@ export function TimeWeatherWidget({ onAddFiles }: TimeWeatherWidgetProps) {
                 <span className="text-black/50 font-semibold flex items-center gap-1.5">
                   <Wind className="w-3 h-3" /> Wind
                 </span>
-                <span className="text-black font-mono font-bold tabular-nums">
+                <span className="text-black dark:text-slate-100 font-mono font-bold tabular-nums">
                   {Math.round(weather.current.wind_kph)} km/h {weather.current.wind_dir}
                 </span>
               </div>
@@ -334,7 +334,7 @@ export function TimeWeatherWidget({ onAddFiles }: TimeWeatherWidgetProps) {
                 <span className="text-black/50 font-semibold flex items-center gap-1.5">
                   <Eye className="w-3 h-3" /> Visibility
                 </span>
-                <span className="text-black font-mono font-bold tabular-nums">
+                <span className="text-black dark:text-slate-100 font-mono font-bold tabular-nums">
                   {weather.current.vis_km} km
                 </span>
               </div>
@@ -345,7 +345,7 @@ export function TimeWeatherWidget({ onAddFiles }: TimeWeatherWidgetProps) {
 
       {/* Upload from Local Section */}
       <div className="border-t-2 border-dashed border-black/20 pt-4">
-        <h3 className="text-black text-xs font-bold uppercase">Upload from Local</h3>
+        <h3 className="text-black dark:text-slate-100 text-xs font-bold uppercase">Upload from Local</h3>
         <p className="text-[10px] text-black/50 font-normal mt-0.5 leading-tight">
           Upload your songs and stream anywhere
         </p>
@@ -357,14 +357,14 @@ export function TimeWeatherWidget({ onAddFiles }: TimeWeatherWidgetProps) {
           onClick={handleFileSelect}
           className={`border-2 border-dashed rounded-xl p-3 flex items-center justify-center gap-3 mt-2.5 cursor-pointer transition-all duration-300 ${
             isDragging
-              ? "border-black bg-[#c2c0c5]"
-              : "border-black/30 bg-[#d5d4d9] hover:bg-[#c2c0c5] hover:border-black"
+              ? "border-black dark:border-[#334155] bg-[#c2c0c5]"
+              : "border-black/30 bg-[#d5d4d9] hover:bg-[#c2c0c5] hover:border-black dark:border-[#334155]"
           }`}
         >
           <FolderUp className="w-5 h-5 text-black/50 shrink-0" />
           <span className="text-[10px] text-black/60 font-semibold leading-normal select-none">
             {uploadedFile ? (
-              <span className="text-black font-bold truncate max-w-[200px] block">
+              <span className="text-black dark:text-slate-100 font-bold truncate max-w-[200px] block">
                 {uploadedFile}
               </span>
             ) : (

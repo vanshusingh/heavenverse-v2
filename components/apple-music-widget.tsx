@@ -67,7 +67,7 @@ export function AppleMusicWidget({
   return (
     <div className="w-full max-w-[340px] h-[520px] bg-white/10 dark:bg-[#0e1622]/40 backdrop-blur-2xl border border-white/20 dark:border-white/10 shadow-2xl rounded-3xl p-6 flex flex-col justify-between hover:bg-white/15 dark:hover:bg-[#0e1622]/45 transition-all duration-300">
       {/* Album Art (HV Logo) with Waveform Overlay */}
-      <div className="relative group w-full aspect-square rounded-2xl overflow-hidden bg-white flex items-center justify-center p-8">
+      <div className="relative group w-full aspect-square rounded-2xl overflow-hidden bg-white dark:bg-[#1e293b] flex items-center justify-center p-8">
         <Image
           src="/images/hv-logo.svg"
           alt="Heavenverse Logo"
@@ -132,7 +132,7 @@ export function AppleMusicWidget({
           onClick={handleProgressClick}
         >
           <div
-            className="absolute top-0 left-0 h-full bg-white rounded-full transition-all duration-300"
+            className="absolute top-0 left-0 h-full bg-white dark:bg-[#1e293b] rounded-full transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -162,7 +162,7 @@ export function AppleMusicWidget({
 
         <button
           onClick={() => setIsPlaying(!isPlaying)}
-          className="w-12 h-12 rounded-full bg-white text-black hover:bg-white/90 transition-all duration-200 hover:scale-110 active:scale-95 flex items-center justify-center shadow-lg cursor-pointer"
+          className="w-12 h-12 rounded-full bg-white dark:bg-[#1e293b] text-black dark:text-slate-100 hover:bg-white/90 transition-all duration-200 hover:scale-110 active:scale-95 flex items-center justify-center shadow-lg cursor-pointer"
         >
           {isPlaying ? (
             <Pause className="w-5 h-5 fill-current" />
@@ -186,7 +186,7 @@ export function AppleMusicWidget({
         >
           <Repeat className="w-4 h-4" />
           {repeatMode === "one" && (
-            <span className="absolute top-1 right-1 w-3.5 h-3.5 bg-white text-black text-[9px] rounded-full flex items-center justify-center font-bold border border-[#0e1622]/40 shadow-sm">
+            <span className="absolute top-1 right-1 w-3.5 h-3.5 bg-white dark:bg-[#1e293b] text-black dark:text-slate-100 text-[9px] rounded-full flex items-center justify-center font-bold border border-[#0e1622]/40 shadow-sm">
               1
             </span>
           )}

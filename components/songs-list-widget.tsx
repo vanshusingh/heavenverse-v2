@@ -93,7 +93,7 @@ export function SongsListWidget({
             <div className="flex items-center gap-3 min-w-0 flex-1">
               <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-all ${
                 activeSongId === song.id
-                  ? "bg-white text-black"
+                  ? "bg-white dark:bg-[#1e293b] text-black dark:text-slate-100"
                   : "bg-white/5 text-white/60"
               }`}>
                 {playingSongId === song.id ? (

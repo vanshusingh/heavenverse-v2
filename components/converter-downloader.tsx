@@ -278,10 +278,10 @@ export function ConverterDownloader({ onAddSong, onPreviewSong }: ConverterDownl
 
 
   return (
-    <div className="max-w-6xl w-full bg-[#f9f8fa] border-[3px] border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] rounded-[2rem] p-6 md:p-8 flex flex-col gap-6 text-black font-retro">
+    <div className="max-w-6xl w-full bg-[#f9f8fa] border-[3px] border-black dark:border-[#334155] shadow-[4px_4px_0px_rgba(0,0,0,1)] rounded-[2rem] p-6 md:p-8 flex flex-col gap-6 text-black dark:text-slate-100 font-retro">
       
       {/* Title */}
-      <div className="text-black">
+      <div className="text-black dark:text-slate-100">
         <h1 className="text-2xl font-bold tracking-wide">Converter & Downloader</h1>
         <p className="text-black/50 text-xs mt-1">Convert YouTube links to high-quality MP3 format.</p>
       </div>
@@ -292,7 +292,7 @@ export function ConverterDownloader({ onAddSong, onPreviewSong }: ConverterDownl
         <div className="lg:col-span-7 flex flex-col gap-6">
           
           {/* Paste URL Form */}
-          <div className="bg-white border-2 border-black rounded-2xl p-5 shadow-[2px_2px_0px_black] text-black">
+          <div className="bg-white dark:bg-[#1e293b] border-2 border-black dark:border-[#334155] rounded-2xl p-5 shadow-[2px_2px_0px_black] text-black dark:text-slate-100">
             <h3 className="font-bold text-sm mb-3 uppercase">Paste YouTube URL</h3>
             
             <form onSubmit={handleAnalyzeSubmit} className="flex flex-col sm:flex-row gap-3">
@@ -305,7 +305,7 @@ export function ConverterDownloader({ onAddSong, onPreviewSong }: ConverterDownl
                   onPaste={handlePaste}
                   disabled={step === 2 || (step >= 3 && step < 6)}
                   placeholder="Paste YouTube track link here..."
-                  className="w-full bg-[#d5d4d9] border-2 border-black rounded-xl px-4 py-2.5 text-xs text-black placeholder-black/45 focus:outline-none focus:bg-[#c2c0c5] transition-all font-sans min-w-0"
+                  className="w-full bg-[#d5d4d9] border-2 border-black dark:border-[#334155] rounded-xl px-4 py-2.5 text-xs text-black dark:text-slate-100 placeholder-black/45 focus:outline-none focus:bg-[#c2c0c5] transition-all font-sans min-w-0"
                 />
               </div>
 
@@ -316,11 +316,11 @@ export function ConverterDownloader({ onAddSong, onPreviewSong }: ConverterDownl
                   value={quality}
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setQuality(e.target.value as any)}
                   disabled={step === 2 || (step >= 3 && step < 6)}
-                  className="bg-[#d5d4d9] border-2 border-black rounded-xl px-3 py-2.5 text-xs text-black focus:outline-none focus:bg-[#c2c0c5] transition-all font-sans cursor-pointer font-bold"
+                  className="bg-[#d5d4d9] border-2 border-black dark:border-[#334155] rounded-xl px-3 py-2.5 text-xs text-black dark:text-slate-100 focus:outline-none focus:bg-[#c2c0c5] transition-all font-sans cursor-pointer font-bold"
                 >
-                  <option value="128" className="bg-[#f9f8fa] text-black font-bold">128 kbps</option>
-                  <option value="192" className="bg-[#f9f8fa] text-black font-bold">192 kbps</option>
-                  <option value="320" className="bg-[#f9f8fa] text-black font-bold">320 kbps</option>
+                  <option value="128" className="bg-[#f9f8fa] text-black dark:text-slate-100 font-bold">128 kbps</option>
+                  <option value="192" className="bg-[#f9f8fa] text-black dark:text-slate-100 font-bold">192 kbps</option>
+                  <option value="320" className="bg-[#f9f8fa] text-black dark:text-slate-100 font-bold">320 kbps</option>
                 </select>
               </div>
 
@@ -328,7 +328,7 @@ export function ConverterDownloader({ onAddSong, onPreviewSong }: ConverterDownl
                 <button
                   type="submit"
                   disabled={!urlInput.trim() || step === 2 || (step >= 3 && step < 6)}
-                  className="w-full sm:w-auto bg-black text-white hover:bg-zinc-800 disabled:opacity-30 disabled:pointer-events-none text-xs font-bold px-5 py-2.5 border-2 border-black rounded-xl shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer shrink-0 flex items-center justify-center gap-1.5 h-[38px]"
+                  className="w-full sm:w-auto bg-black text-white hover:bg-zinc-800 disabled:opacity-30 disabled:pointer-events-none text-xs font-bold px-5 py-2.5 border-2 border-black dark:border-[#334155] rounded-xl shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none transition-all cursor-pointer shrink-0 flex items-center justify-center gap-1.5 h-[38px]"
                 >
                   {step === 2 ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -346,7 +346,7 @@ export function ConverterDownloader({ onAddSong, onPreviewSong }: ConverterDownl
               <button
                 type="button"
                 onClick={() => handleDemoLink("youtube")}
-                className="text-[9px] bg-[#e63b3b]/10 hover:bg-[#e63b3b]/20 text-[#e63b3b] border-2 border-black px-2.5 py-1 rounded-lg transition-colors font-bold cursor-pointer"
+                className="text-[9px] bg-[#e63b3b]/10 hover:bg-[#e63b3b]/20 text-[#e63b3b] border-2 border-black dark:border-[#334155] px-2.5 py-1 rounded-lg transition-colors font-bold cursor-pointer"
               >
                 YouTube Link
               </button>
@@ -355,10 +355,10 @@ export function ConverterDownloader({ onAddSong, onPreviewSong }: ConverterDownl
 
           {/* Progress / Status display */}
           {(step === 2 || (step >= 3 && step < 6) || statusText) && (
-            <div className="bg-white border-2 border-black rounded-2xl p-5 flex flex-col justify-center items-center py-6 shadow-[2px_2px_0px_black]">
+            <div className="bg-white dark:bg-[#1e293b] border-2 border-black dark:border-[#334155] rounded-2xl p-5 flex flex-col justify-center items-center py-6 shadow-[2px_2px_0px_black]">
               {(step >= 3 && step < 6) ? (
                 <div className="w-full max-w-md flex flex-col items-center">
-                  <span className="text-black text-xs font-bold mb-2 uppercase">Converting stream ({progress}%)</span>
+                  <span className="text-black dark:text-slate-100 text-xs font-bold mb-2 uppercase">Converting stream ({progress}%)</span>
                   <div className="w-full h-3 bg-[#d5d4d9] border border-black/40 rounded-full overflow-hidden shadow-inner">
                     <div
                       style={{ width: `${progress}%` }}
@@ -380,15 +380,15 @@ export function ConverterDownloader({ onAddSong, onPreviewSong }: ConverterDownl
         {/* Right Side: Metadata / Action Card (5 cols) */}
         <div className="lg:col-span-5">
           {analyzedSong ? (
-            <div className="bg-white border-2 border-black rounded-2xl p-5 flex flex-col h-full justify-between gap-6 shadow-[2px_2px_0px_black] text-black">
+            <div className="bg-white dark:bg-[#1e293b] border-2 border-black dark:border-[#334155] rounded-2xl p-5 flex flex-col h-full justify-between gap-6 shadow-[2px_2px_0px_black] text-black dark:text-slate-100">
               
               {/* Media Card Details */}
               <div>
                 <h3 className="font-bold text-sm mb-4 uppercase">Metadata Analysis</h3>
                 
-                <div className="flex flex-col gap-4 p-4 bg-[#e2e1e6] border-2 border-black rounded-xl shadow-inner">
+                <div className="flex flex-col gap-4 p-4 bg-[#e2e1e6] dark:bg-[#020617] border-2 border-black dark:border-[#334155] rounded-xl shadow-inner">
                   {/* Thumbnail Cover Preview */}
-                  <div className="relative aspect-video w-full rounded-lg overflow-hidden border-2 border-black shadow-md group bg-black/40">
+                  <div className="relative aspect-video w-full rounded-lg overflow-hidden border-2 border-black dark:border-[#334155] shadow-md group bg-black/40">
                     <Image
                       src={analyzedSong.thumbnailUrl || "/images/karan-aujla-album.png"}
                       alt="Thumbnail preview"
@@ -403,14 +403,14 @@ export function ConverterDownloader({ onAddSong, onPreviewSong }: ConverterDownl
                       {analyzedSong.duration}
                     </span>
                     {/* YouTube tag */}
-                    <span className="absolute top-2.5 left-2.5 flex items-center gap-1 text-[8px] font-bold px-2.5 py-1 rounded-lg border-2 bg-white border-black text-black">
+                    <span className="absolute top-2.5 left-2.5 flex items-center gap-1 text-[8px] font-bold px-2.5 py-1 rounded-lg border-2 bg-white dark:bg-[#1e293b] border-black dark:border-[#334155] text-black dark:text-slate-100">
                       <Youtube className="w-2.5 h-2.5 text-red-600" />
                       <span className="uppercase tracking-widest">{analyzedSong.source}</span>
                     </span>
                   </div>
 
                   <div className="flex flex-col justify-center min-w-0 px-1">
-                    <span className="text-sm font-bold text-black truncate">{analyzedSong.title}</span>
+                    <span className="text-sm font-bold text-black dark:text-slate-100 truncate">{analyzedSong.title}</span>
                     <span className="text-[10px] text-black/55 truncate mt-0.5">{analyzedSong.artist}</span>
                   </div>
                 </div>
@@ -418,25 +418,25 @@ export function ConverterDownloader({ onAddSong, onPreviewSong }: ConverterDownl
                 <div className="mt-4 space-y-2">
                   <div className="flex justify-between text-xs px-1">
                     <span className="text-black/50 font-bold">Artist Name</span>
-                    <span className="text-black font-bold">{analyzedSong.artist}</span>
+                    <span className="text-black dark:text-slate-100 font-bold">{analyzedSong.artist}</span>
                   </div>
                   <div className="flex justify-between text-xs px-1">
                     <span className="text-black/50 font-bold">Album Name</span>
-                    <span className="text-black font-bold truncate max-w-[150px] text-right">{analyzedSong.album}</span>
+                    <span className="text-black dark:text-slate-100 font-bold truncate max-w-[150px] text-right">{analyzedSong.album}</span>
                   </div>
                   <div className="flex justify-between text-xs px-1">
                     <span className="text-black/50 font-bold">Track Name</span>
-                    <span className="text-black font-bold">{analyzedSong.title}</span>
+                    <span className="text-black dark:text-slate-100 font-bold">{analyzedSong.title}</span>
                   </div>
                   <div className="flex justify-between text-xs px-1 border-t-2 border-dashed border-black/15 pt-2 mt-2">
                     <span className="text-black/50 font-bold">Source Platform</span>
-                    <span className="text-black font-bold flex items-center gap-1 capitalize">
+                    <span className="text-black dark:text-slate-100 font-bold flex items-center gap-1 capitalize">
                       <Youtube className="w-3.5 h-3.5 text-red-600" /> YouTube
                     </span>
                   </div>
                   <div className="flex justify-between text-xs px-1">
                     <span className="text-black/50 font-bold">Conversion Quality</span>
-                    <span className="text-black font-mono font-bold">{quality}kbps MP3</span>
+                    <span className="text-black dark:text-slate-100 font-mono font-bold">{quality}kbps MP3</span>
                   </div>
                 </div>
               </div>
@@ -446,7 +446,7 @@ export function ConverterDownloader({ onAddSong, onPreviewSong }: ConverterDownl
                 {step === 3 && (
                   <button
                     onClick={handleConvert}
-                    className="w-full bg-[#4a689d] text-white text-xs font-bold py-2.5 border-2 border-black rounded-xl transition-all shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none cursor-pointer flex items-center justify-center gap-1.5"
+                    className="w-full bg-[#4a689d] text-white text-xs font-bold py-2.5 border-2 border-black dark:border-[#334155] rounded-xl transition-all shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none cursor-pointer flex items-center justify-center gap-1.5"
                   >
                     <span>Convert Audio</span>
                   </button>
@@ -455,7 +455,7 @@ export function ConverterDownloader({ onAddSong, onPreviewSong }: ConverterDownl
                 {step === 6 && (
                   <button
                     onClick={handleSaveToLibrary}
-                    className="w-full bg-[#e63b3b] text-white text-xs font-bold py-2.5 border-2 border-black rounded-xl transition-all shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none cursor-pointer flex items-center justify-center gap-1.5"
+                    className="w-full bg-[#e63b3b] text-white text-xs font-bold py-2.5 border-2 border-black dark:border-[#334155] rounded-xl transition-all shadow-[2px_2px_0px_black] active:translate-y-0.5 active:shadow-none cursor-pointer flex items-center justify-center gap-1.5"
                   >
                     <Download className="w-4 h-4" />
                     <span>Download MP3 & Stream Instantly</span>
@@ -472,7 +472,7 @@ export function ConverterDownloader({ onAddSong, onPreviewSong }: ConverterDownl
 
             </div>
           ) : (
-            <div className="bg-white border-2 border-dashed border-black/25 bg-[#d5d4d9] rounded-2xl p-5 flex flex-col justify-center items-center py-16 h-full text-center">
+            <div className="bg-white dark:bg-[#1e293b] border-2 border-dashed border-black/25 bg-[#d5d4d9] rounded-2xl p-5 flex flex-col justify-center items-center py-16 h-full text-center">
               <span className="text-xs text-black/60 font-bold uppercase">Ready to Convert</span>
               <span className="text-[10px] text-black/50 mt-1 max-w-[200px] leading-relaxed font-bold">
                 Paste a YouTube track link on the left to start the conversion.
